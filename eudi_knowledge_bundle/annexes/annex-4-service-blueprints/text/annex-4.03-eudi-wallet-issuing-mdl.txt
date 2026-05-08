@@ -1,0 +1,78 @@
+Issuing mDL               SUBJECT TO NATIONAL IMPLEMENTATION
+
+
+
+
+Journey Steps
+                                                                                                                              Usage
+Which step of the experience
+are you describing?
+                                                                                                                     How would they use the app?
+
+
+
+
+Enablers
+What do they need
+                                                    For mDL provider:             For citizen:
+                                                 certified for issuing valid       Internet
+                                                      mDL to citizens
+
+
+
+
+                                                       Open EUDI               Authenticate in   Select to add
+                                                         Wallet                 EUDI Wallet          mDL
+Citizen
+Actor
+
+
+
+                                                      Visit mDL                  Open EUDI       Authenticate     Scan a QR                                  Read error                  Preview and      View mDL
+                                                   provider service                Wallet          in EUDI       code to add                                  message                  Confirm storing    (optional)
+                                                                                                    wallet          mDL                                                               of mDL (optional)
+
+
+
+
+Police officer (PO)
+Actor
+
+
+
+
+Touchpoint
+What service do they interact
+with?                                                        mDL provider service
+
+
+                                  EUDI Wallet (Operational/Valid State)
+
+                                   Operational/Valid State
+
+
+
+
+Backstage
+
+
+
+
+Police
+Relying party
+
+
+
+
+mDL Provider
+Actor
+                                                                                                                                             Authenticates                issue mDL
+                                                                                                                                              the citizen
+
+
+
+
+EUDI Wallet
+Actor / Touchpoint                                                                                                        Authenticate the                                Store mDL
+                                                                                                                               User
+

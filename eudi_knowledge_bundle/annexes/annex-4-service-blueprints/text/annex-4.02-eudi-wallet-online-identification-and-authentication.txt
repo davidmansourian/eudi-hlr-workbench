@@ -1,0 +1,94 @@
+Online Identification & Authentication
+
+Journey Steps
+                                                                                                                                         Usage
+Which step of the experience
+are you describing?
+                                                                                                                                How would they use the app?
+
+
+
+
+Enablers
+What do they need                             For citizen:                         For Relying Party:                                                                   For citizen: Being able
+                                               Internet                       Being a certified EUDI Wallet                                                              to authenticate via
+                                                                             ecosystem entity included in a                                                              PIN/biometrics etc.
+                                                                                      Trusted List
+
+
+
+
+                                 Launch relying          Request access to         Select authentication                              Access EUDI      View / Select           Confirm                                                 Return to relying   Granted Access
+Citizen                         party website/app       relying party service         via EUDI wallet                                  Wallet app   requested data or        authorizing                                                 party service
+                                                                                                                                                                                                                                      /Receives positive
+                                                                                                                                                      data types and      disclosure of data
+Actor                                                                                      To increase
+                                                                                           awareness it
+                                                                                                                                                        requestor                (PIN,                                                    feedback
+
+                                                                                              shall be                                                                       Biometrics)
+                                                                                          considered to
+                                                                                          show the EUDI
+                                                                                                                                                                             Depending on the
+                                                                                         Wallet Trust Mark.
+                                                                                                                                                                            architecture further
+                                                                                                                                                                               actions may be
+                                                                                                                                                                                 needed like
+                                                                                                                                                                              retrieving PID in
+                                                                                                                                                                            synchronous flows.
+
+
+                                                                                                                                      Read                                                                                 Read                            Denied access
+                                                                                                                                 error message                                                                        error message
+
+
+
+
+Touchpoint
+What service do they interact                                Relying party service                                                                                                                                                          Relying party service
+
+with?
+                                EUDI Wallet (Operational/Valid State)
+
+                                Valid State
+
+
+
+
+Backstage
+
+
+
+Relying party
+Actor
+                                                                    The interaction between                                                                                                                           Identify the    Authenticate the
+                                  Sends request to EUDI
+                                                                    the EUDI Wallet and the                                                                                                                                            presentation
+                                    Wallet (deep link)                                                                                                                                                                  citizen
+                                                                  relaying party is indicatively
+                                                                     depicted to occur via a
+                                                                   deep link, but it could also
+                                                                   be achieved through other
+                                                                  means, e.g. the scanning of
+                                                                      a QR code or others
+
+
+
+PID provider
+Actor
+
+
+
+
+EUDI Wallet
+Actor / Touchpoint
+                                                                   Launches EUDI                              Verifies authenticity                                                                Authenticate the
+                                                                       Wallet                                 of relying party and                                                                      User
+                                                                                                               validity of request
+
+
+
+
+EUDI Wallet Provider
+Actor
+

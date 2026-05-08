@@ -1,0 +1,90 @@
+EUDI Wallet Initialisation and Activation                                                                           SUBJECT TO NATIONAL IMPLEMENTATION
+
+
+
+
+Journey Steps
+                                                  Discovery                                                                            Adoption                                                                                                                            Initialisation & Activation
+Which step of the experience
+                                      Why do they even start the journey?                                                      How would they find the app?                                                                                                         How would they set up and activate the app?
+are you describing?
+
+
+
+
+Enablers
+What do they need                                                                                                                      For citizen:          For citizen:                                      For PID provider:                      For PID provider:
+                                                                                                                                      Mobile device           Internet                                      National authentication                  certified for issuing
+                                                                                                                                                                                                                    means                            valid PID to citizens
+
+
+
+
+                                                                                                                                                                                                             Open app          Read documentation
+                                    Read article              Ask                Search for a     Attempt log-​in      Search store        Read reviews   Download app                                                             / FAQ/ T&Cs                                                                                                                                                  View PID (optional)
+Citizen                                                  friends/family         differentiation    to an online         for the app         (optional)      To increase
+                                                                                     point            service
+Actor
+                                                                                                                                                            awareness it
+                                                                                                                                                               shall be
+                                                                                                                                                           considered to
+                                                                                                                                                           show the EUDI
+                                                           The 'discovery' strategy needs to                                                              Wallet Trust Mark.
+                                                        be elaborated at national level by each
+                                                            Member State and EUDI Wallet
+                                                                       Provider.                                                                                                                               Set up user
+                                                                                                                                                                                                                                                          Authenticates to proceed                            Read                                                                                       Read
+                                                                The depicted steps are                                                                                                               identification/authentication
+                                                                                                                                                                                                                                                            with PID initilisation                        error message                                                                              error message
+                                                          indicative/optional and subject to                                                                                                                 towards wallet
+                                                               national implementation
+
+
+
+
+Touchpoint
+What service do they interact                                                                                                                                                                                    National system of authentication
+                                                                                                                                                                                                                            E.g. taxisnet
+
+
+with?
+                                Online & Offline ads                                                                                                                                                      EUDI Wallet (Operational State)                                                                                                        EUDI Wallet (Operational/Valid State)
+                                                                                                                     Mobile application store
+                                Social media   TV   Website   Word of mouth                                                                                                                                Operational state                                                                                                                     Valid State
+
+
+
+
+Backstage
+
+
+
+
+Relying party
+Actor
+
+
+
+
+PID provider
+Actor
+                                                                                                                                                                                                                                                                                                Identify and Authenticate   Verify EUDI Wallet                                           Issue PID
+                                                                                                                                                                                                                                                                                                   user of EUDI Wallet            status
+
+
+
+
+EUDI Wallet
+Actor / Touchpoint
+                                                                                                                                                                                                                                                                             Authenticate the
+                                                                                                                                                                                                                                                                                  User                                                                                                   Store PID
+
+
+
+
+EUDI Wallet Provider
+Actor
+
+                                                                                                                                                                            Captures analytics for                     EUDI Wallet
+                                                                                                                                                                           EUDI Wallet downloads                       initial setup
+

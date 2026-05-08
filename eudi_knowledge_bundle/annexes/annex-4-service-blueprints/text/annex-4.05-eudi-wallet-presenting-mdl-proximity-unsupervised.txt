@@ -1,0 +1,77 @@
+Presenting mDL (Proximity - Unsupervised)
+
+Journey Steps
+                                                                                                                                      Usage
+Which step of the experience
+                                                                                                                             How would they use the app?
+are you describing?
+
+
+
+
+Enablers
+What do they need
+                                For citizen and relying party:                                       For EUDI Wallet:         For Relying Party:                                     For citizen: Being able
+                                 Having issued a mDL in the                                           NFC/BLE/WiFi       Being a certified EUDI Wallet                                to authenticate via
+                                         EUDI Wallet                                                                    ecosystem entity included in a                                PIN/biometrics etc.
+                                                                                                                                 Trusted List
+
+
+
+
+                                    Decides to                   Open EUDI   Authenticate in                  Show QR code                                                 View / Select             Confirm
+                                                                                                                                                                                                                                                                                 Granted Access
+                                  request access                   Wallet     EUDI Wallet                                                                               requested data or          authorizing
+                                 by authenticating                                                                                                                        data types and        disclosure of data
+
+Citizen                          with EUDI Wallet                                                                                                                           requestor                  (PIN,
+                                                                                                                                                                                                   Biometrics)
+                                                                                                                                                                             To increase
+
+Actor                                                                                                                                                                        awareness it
+                                                                                                                                                                                shall be             There may be use cases
+                                                                                                                                                                            considered to             ,e.g. roadside checks,
+                                                                                                                                                                                                   where the above steps may
+                                                                                                                                                                            show the EUDI           be deemed optional. This
+                                                                                                                                                                           Wallet Trust Mark.       would depend on the use
+                                                                                                                                                                                                       case and legal basis.
+
+
+
+
+                                                                                                                                                                                Read                                                                   Read
+                                                                                                                                                                                                                                                                                 Denied access
+                                                                                                                                                                           error message                                                          error message
+
+
+
+
+Touchpoint
+                                                                                                                                    Relying party service
+What service do they interact   Relying party service                                                                                                                                                                                                Relying party service
+                                                                                                                                        / Verifier app
+with?
+                                EUDI Wallet (Operational/Valid State)
+
+                                 Operational/Valid State
+
+
+
+
+Backstage
+
+
+
+Service/Event/Venue
+Relying party                                                                          Generates request                             Scan QR code
+                                                                                      for the required data                                                                                                                                       Identify the    Authenticate the
+                                                                                                                                                                                                                                                    citizen        presentation
+
+
+
+
+EUDI Wallet
+Actor / Touchpoint
+                                                                                                                                               Verify authenticity of                                                          Authenticate the
+                                                                                                                                                   relying party                                                                    User
+

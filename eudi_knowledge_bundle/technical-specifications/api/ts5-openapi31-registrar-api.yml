@@ -1,0 +1,517 @@
+openapi: 3.1.0
+info:
+  title: EUDI Wallet Relying Party Registrar API # A sample title
+  version: v1 # Please provide the API version
+servers:
+  - url: https://example.com/registrar # Please provide applicable URL
+components:
+  schemas:
+    WalletRelyingParty:
+      $ref: '#/components/schemas/WalletRelyingPartySchema'
+    Claim:
+      type: object
+      properties:
+        path:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+          minItems: 0     
+    Credential:
+      type: object
+      properties:
+        format:
+          type: string
+        meta:
+          type: string
+        claim:
+          type: array
+          items:
+            $ref: '#/components/schemas/Claim'
+          minItems: 0
+    Identifier:
+      type: object
+      properties:
+        identifier:
+          type: string
+        type:
+          type: string
+    IntendedUse:
+      type: object
+      properties:
+        purpose:
+          type: array
+          items:
+            $ref: '#/components/schemas/MultiLangString'
+          minItems: 1
+        privacyPolicy:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+            minItems: 1
+        intendedUseIdentifier:
+          type: string    
+        createdAt:
+          type: string
+        revokedAt:
+          type: string
+          minItems: 0
+        credential:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credential'
+          minItems: 1
+    Law:
+      type: object
+      properties:
+        lang:
+          type: string
+        legalBasis:
+          type: string
+    LegalEntity:
+      type: object
+      properties:
+        country:
+          type: string
+        email:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        identifier:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+          minItems: 0
+        infoURI:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        legalPerson:
+          $ref: '#/components/schemas/LegalEntity'
+        may be:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalPerson'
+        naturalPerson:
+          $ref: '#/components/schemas/NaturalPerson'
+        phone:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        postalAddress:
+          type: array
+          items:
+            type: string
+          minItems: 0
+    LegalPerson:
+      type: object
+      properties:
+        establishedByLaw:
+          type: array
+          items:
+            $ref: '#/components/schemas/Law'
+          minItems: 0
+        legalName:
+          type: array
+          items:
+            type: string
+          minItems: 1
+    MultiLangString:
+      type: object
+      properties:
+        lang:
+          type: string
+        content:
+          type: string 
+    NaturalPerson:
+      type: object
+      properties:
+        dateOfBirth:
+          type: string
+        familyName:
+          type: string
+        givenName:
+          type: string
+        placeOfBirth:
+          type: string
+    Policy:
+      type: object
+      properties:
+        policyURI:
+          type: string
+        type:
+          type: string
+    Provider:
+      type: object
+      properties:
+        policy:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+          minItems: 0
+        providerType:
+          type: integer
+        x5c:
+          type: string
+    SupervisoryAuthority:
+      type: object
+      properties:
+        country:
+          type: string
+        email:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        formURI:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        name:
+          type: string
+        phone:
+          type: array
+          items:
+            type: string
+          minItems: 0
+    WalletRelyingPartySchema:
+      allOf:
+        - $ref: '#/components/schemas/Provider'
+        - type: object
+          properties:
+            entitlements:
+              type: array
+              items:
+                type: string
+              minItems: 1
+            intendedUse:
+              type: array
+              items:
+                $ref: '#/components/schemas/IntendedUse'
+              minItems: 1
+            isPSB:
+              type: boolean
+              minItems: 1
+            providesAttestations:
+              $ref: '#/components/schemas/Credential'
+            srvDescription:
+              type: array
+              items:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/components/schemas/MultiLangString'
+            supervisoryAuthority:
+              $ref: '#/components/schemas/SupervisoryAuthority'
+            supportURI:
+              type: string
+            tradeName:
+              type: string
+            registryURI:
+              type: string
+            usesIntermediary:
+              type: array
+              items:
+                $ref: '#/components/schemas/WalletRelyingParty'
+              minItems: 0
+            isIntermediary:
+              type: boolean
+    SignedWRP:
+      type: object
+      description: The schema for the payload contained within the signed JWT response for an 'put' WRP update.
+      required:
+        - iss
+        - iat
+        - data
+      properties:
+        iss:
+          type: string
+          description: Issuer, the identifier of the Registry.
+        iat:
+          type: integer
+          format: int64
+          description: Issued At, the timestamp at which the JWT was issued.
+        data:
+          $ref: '#/components/schemas/WalletRelyingParty'
+    SignedWRPArray:
+      type: object
+      description: The schema for the payload within the JWT response for /wrp 'get' method.
+      required:
+        - iss
+        - iat
+        - data
+      properties:
+        iss:
+          type: string
+          description: Issuer, the identifier of the Registry.
+        iat:
+          type: integer
+          format: int64
+          description: Issued At, the timestamp at which the JWT was issued.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WalletRelyingParty'
+        pagination:
+          type: object
+          properties:
+            next_cursor:
+              type: string
+              description: The cursor to use to fetch the next page of results.
+            has_next_page:
+              type: boolean
+              description: Whether there is a next page of results.
+    SignedIntendedUseCheckResult:
+      type: object
+      description: The schema for the payload within the JWT response for /wrp/check-intended-use 'get' method
+      required:
+        - iss
+        - iat
+        - data
+      properties:
+        iss:
+          type: string
+          description: Issuer, the identifier of the Registry
+        iat:
+          type: integer
+          format: int64
+          description: Issued At, the timestamp at which the JWT was issued
+        data:
+          type: object
+          properties:
+            isRegistered:
+              type: boolean
+              description: True if the specified intended use identifier, credential/claim or privacy policy is registered for the Wallet Relying Party's intended use, false otherwise.
+            details:
+              type: string
+              description: Optional additional details about the check result
+paths:
+  /wrp:
+    # Post method harmonisation is for further study/parked on request of DE
+    #post:
+      #summary: Create a new Wallet Relying Party through posting a complete WalletRelyingParty object
+      #requestBody:
+      #  required: true
+      #  content:
+      #    application/json:
+      #      schema:
+      #        $ref: '#/components/schemas/WalletRelyingParty'
+      #responses:
+      #  '201':
+      #    description: Successfully created Wallet Relying Party
+      #    content:
+      #      application/json:
+      #        schema:
+      #          $ref: '#/components/schemas/WalletRelyingParty'
+      #  '400':
+      #    description: Invalid request payload
+    put:
+      summary: Update an existing Wallet Relying Party
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletRelyingParty'
+      responses:
+        '200':
+          description: Successfully updated Wallet Relying Party as a JWS-signed object
+          headers:
+            x-jku-url:
+              description: URL pointing to the JSON Web Key Set (JWKS) of the Registry, used to verify the signature of the response
+              schema:
+                type: string
+                format: uri
+          content:
+            application/jwt:
+              schema:
+                type: string
+                format: JWS
+                description: A JWS-signed JWT in compact serialisation format. The JWT payload, once decoded and verified, conforms to the 'SignedWRP' schema defined in components block of the specification.
+        '400':
+          description: Invalid request payload
+        '404':
+          description: Wallet Relying Party not found      
+    get:
+      summary: Get a list of Wallet Relying Parties (with optional filtering and pagination, list of all registered Wallet-Relying Parties returned when no query parameters are provided.)
+      parameters:
+        - in: query
+          name: identifier
+          schema:
+            type: string
+          description: Filter by Wallet-Relying Party identifier
+        - in: query
+          name: legalname
+          schema:
+            type: string
+          description: Filter by legal name
+        - in: query
+          name: tradename
+          schema:
+            type: string
+          description: Filter by trade name
+        - in: query
+          name: policy
+          schema:
+            type: string
+          description: Filter by policy URI or type
+        - in: query
+          name: entitlement
+          schema:
+            type: string
+          description: Filter by entitlement
+        - in: query
+          name: credentialmeta
+          schema:
+            type: string
+          description: Filter by the contents of 'meta' attribute of a Credential
+        - in: query
+          name: credentialformat
+          schema:
+            type: string
+          description: Additional filter to narrow down 'Meta' matches with matching also the 'format' attribute
+        - in: query
+          name: usesintermediary
+          schema:
+            type: string
+          description: Filter by intermediary identifier
+        - in: query
+          name: isintermediary
+          schema:
+            type: boolean
+          description: Filter by intermediary status (true/false)
+        - in: query
+          name: intendeduseidentifier
+          schema:
+            type: string
+          description: Filter by value of the intended use identifier
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          description: The number of items to return per page
+        - name: cursor
+          in: query
+          description: The cursor for the next page of results
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JWS-signed list of matching Wallet Relying Party objects
+          headers:
+            x-jku-url:
+              description: URL pointing to the JSON Web Key Set (JWKS) of the Registry, used to verify the signature of the response
+              schema:
+                type: string
+                format: uri
+          content:
+            application/jwt:
+              schema:
+                type: string
+                format: JWS
+                description: A JWS-signed JWT in compact serialisation format. The JWT payload, once decoded and verified, conforms to the 'SignedWRPArray' schema defined in components block of the specification.
+        '400':
+          description: Invalid pagination parameters
+  /wrp/{identifier}:
+    get:
+      summary: Get Wallet Relying Party by identifier
+      parameters:
+        - in: path
+          name: identifier
+          required: true
+          schema:
+            type: string
+          description: The identifier of the Wallet Relying Party to retrieve
+      responses:
+        '200':
+          description: Found Wallet Relying Party as a JWS-signed object
+          headers:
+            x-jku-url:
+              description: URL pointing to the JSON Web Key Set (JWKS) of the Registry, used to verify the signature of the response
+              schema:
+                type: string
+                format: uri
+          content:
+            application/jwt:
+              schema:
+                type: string
+                format: JWS
+                description: A JWS-signed JWT in compact serialisation format. The JWT payload, once decoded and verified, conforms to the 'SignedWRP' schema defined in components block of the specification.
+        '404':
+          description: Wallet Relying Party not found
+    delete:
+      summary: Delete a Wallet Relying Party by identifier
+      parameters:
+        - in: path
+          name: identifier
+          required: true
+          schema:
+            type: string
+          description: The identifier of the Wallet Relying Party to delete
+      responses:
+        '204':
+          description: Wallet Relying Party successfully deleted
+        '404':
+          description: Wallet Relying Party not found
+  /wrp/check-intended-use: 
+    get:
+      summary: Check if a specific intended use identifier, credential/claim type and/or privacy policy URL is registered for a Wallet Relying Party's intended use.
+      description: This endpoint allows checking if a given Wallet Relying Party has declared an intended use with queried id, or for a specific credential format and claim path or privacy policy.
+      parameters:
+        - in: query
+          name: rpidentifier
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the Wallet Relying Party
+        - in: query
+          name: intendeduseidentifier
+          schema:
+            type: string
+          description: The Registry-level unique identifier of the intended use
+        - in: query
+          name: credentialformat
+          schema:
+            type: string
+          description: The format of the credential to check (e.g., 'dc+sd-jwt', 'mso_mdoc')
+        - in: query
+          name: claimpath
+          schema:
+            type: string
+          description: The path of the claim within the credential to check (e.g., 'IBAN')
+        - in: query
+          name: credentialmeta # Optional, for more specific checks
+          schema:
+            type: string
+          description: Optional. The 'meta' attribute of the credential (e.g., 'BankAccount')
+        - in: query
+          name: policyurl
+          schema:
+            type: string
+            format: uri
+          description: Used when checking if the privacy policy URL is registered for the identified Wallet Relying Party
+      responses:
+        '200':
+          description: Intended use check result as a JWS-signed object
+          headers:
+            x-jku-url:
+              description: URL pointing to the JSON Web Key Set (JWKS) of the Registry, used to verify the signature of the response
+              schema:
+                type: string
+                format: uri
+          content:
+            application/jwt:
+              schema:
+                type: string
+                format: JWS
+                description: A JWS-signed JWT in compact serialisation format. The JWT payload, once decoded and verified, conforms to the 'SignedIntendedUseCheckResult' schema defined in components block of the specification.
+        '400':
+          description: Invalid request parameters (e.g., missing required parameters)
+        '404':
+          description: Wallet Relying Party with the given 'rpidentifier' not found

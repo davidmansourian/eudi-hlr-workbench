@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F14" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>EUDI Wallet — Engineering Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF8F3;
+  --bg-soft: #F2EEE5;
+  --bg-elevated: #FFFFFF;
+  --text: #1A1A1F;
+  --text-muted: #5A5A62;
+  --text-subtle: #8E8E96;
+  --border: rgba(20,20,30,0.08);
+  --border-strong: rgba(20,20,30,0.16);
+  --accent: #003399;
+  --accent-soft: rgba(0,51,153,0.08);
+  --accent-hover: #0044BB;
+  --highlight: #FFE9A6;
+  --code-bg: #ECE7DB;
+  --code-text: #4A3F1F;
+  --quote-border: #003399;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --cat-foundation: #6B7280;
+  --cat-ecosystem: #7C3AED;
+  --cat-architecture: #003399;
+  --cat-protocols: #0891B2;
+  --cat-trust: #047857;
+  --cat-features: #B45309;
+  --cat-security: #B91C1C;
+  --cat-operations: #475569;
+  --cat-reference: #57534E;
+  --cat-closing: #92400E;
+}
+body.dark {
+  --bg: #0F0F14;
+  --bg-soft: #16161E;
+  --bg-elevated: #1C1C26;
+  --text: #ECEAE3;
+  --text-muted: #A6A6AE;
+  --text-subtle: #6E6E76;
+  --border: rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.16);
+  --accent: #7BA5F0;
+  --accent-soft: rgba(123,165,240,0.10);
+  --accent-hover: #9DBBF5;
+  --highlight: rgba(255,233,166,0.18);
+  --code-bg: #20202A;
+  --code-text: #D4C99A;
+  --quote-border: #7BA5F0;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --cat-foundation: #9CA3AF;
+  --cat-ecosystem: #A78BFA;
+  --cat-architecture: #7BA5F0;
+  --cat-protocols: #67E8F9;
+  --cat-trust: #6EE7B7;
+  --cat-features: #FCD34D;
+  --cat-security: #FCA5A5;
+  --cat-operations: #94A3B8;
+  --cat-reference: #D6D3D1;
+  --cat-closing: #FCD34D;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  font-feature-settings: "ss01", "cv11", "kern";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--accent);
+  width: 0%;
+  z-index: 100;
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 8px var(--accent);
+}
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.site-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.site-title em { font-style: italic; color: var(--accent); }
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 20px;
+  transition: background-color 0.2s ease;
+  font-family: inherit;
+  padding: 0;
+}
+.icon-btn:hover, .icon-btn:active { background: var(--bg-soft); }
+.icon-btn svg { width: 22px; height: 22px; }
+.cross-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 11px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.cross-link:hover, .cross-link:active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.cover {
+  min-height: calc(100vh - 64px);
+  min-height: calc(100svh - 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, var(--accent-soft) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, var(--accent-soft) 0%, transparent 60%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.cover-inner { position: relative; z-index: 1; }
+.kicker {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.kicker::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--accent), transparent);
+  opacity: 0.4;
+}
+.cover-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(48px, 14vw, 88px);
+  line-height: 0.95;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  margin: 0 0 12px 0;
+  color: var(--text);
+}
+.cover-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  display: block;
+}
+.cover-subtitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0 0 36px 0;
+  letter-spacing: -0.01em;
+}
+.cover-tagline {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  max-width: 32em;
+  margin: 0 0 56px 0;
+}
+.cover-stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-num {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-subtle);
+  margin-top: 4px;
+}
+.cover-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 28px;
+  font-size: 12px;
+  color: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.7;
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+.toc-wrap { padding: 60px 24px 80px; max-width: 720px; margin: 0 auto; }
+.section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 32px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.toc-item {
+  border-bottom: 1px solid var(--border);
+}
+.toc-item:first-child { border-top: 1px solid var(--border); }
+.toc-link {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 4px;
+  text-decoration: none;
+  color: var(--text);
+  transition: color 0.2s ease, transform 0.2s ease, padding 0.2s ease;
+  position: relative;
+}
+.toc-link:hover, .toc-link:active {
+  color: var(--accent);
+  padding-left: 8px;
+}
+.toc-num {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-subtle);
+  line-height: 1;
+}
+.toc-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.toc-meta {
+  font-size: 11px;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.toc-cat-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.toc-cat-dot.foundation { background: var(--cat-foundation); }
+.toc-cat-dot.ecosystem { background: var(--cat-ecosystem); }
+.toc-cat-dot.architecture { background: var(--cat-architecture); }
+.toc-cat-dot.protocols { background: var(--cat-protocols); }
+.toc-cat-dot.trust { background: var(--cat-trust); }
+.toc-cat-dot.features { background: var(--cat-features); }
+.toc-cat-dot.security { background: var(--cat-security); }
+.toc-cat-dot.operations { background: var(--cat-operations); }
+.toc-cat-dot.reference { background: var(--cat-reference); }
+.toc-cat-dot.closing { background: var(--cat-closing); }
+main { padding: 0; max-width: 100%; }
+.section {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 60px 24px 40px;
+  scroll-margin-top: 80px;
+}
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 0;
+  color: var(--text-subtle);
+  font-size: 14px;
+  letter-spacing: 0.4em;
+  opacity: 0.5;
+}
+.section-header {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.section-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  color: var(--text-muted);
+}
+.section-cat .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.section-number {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-subtle);
+  margin-bottom: 4px;
+  display: block;
+  letter-spacing: 0.04em;
+}
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(30px, 7vw, 40px);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  margin: 0 0 12px 0;
+  color: var(--text);
+}
+.section h2 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+.section-meta {
+  font-size: 12px;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin: 48px 0 16px 0;
+  color: var(--text);
+}
+.section h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 32px 0 12px 0;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+.section h5 {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 24px 0 8px 0;
+}
+.section p {
+  margin: 0 0 18px 0;
+  color: var(--text);
+}
+.section p strong { font-weight: 600; color: var(--text); }
+.section p em { font-style: italic; }
+.section a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  background-image: linear-gradient(transparent calc(100% - 1px), var(--accent) calc(100% - 1px));
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease;
+}
+.section a:hover { background-size: 100% 100%; }
+.section ul, .section ol {
+  margin: 0 0 24px 0;
+  padding-left: 24px;
+}
+.section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.section li::marker { color: var(--accent); }
+.section ul li { padding-left: 4px; }
+.section ol li { padding-left: 6px; font-variant-numeric: tabular-nums; }
+.section blockquote {
+  margin: 28px 0;
+  padding: 20px 24px;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+  color: var(--text-muted);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.55;
+}
+.section blockquote p:last-child { margin-bottom: 0; }
+.section blockquote strong { font-weight: 600; color: var(--text); font-style: normal; }
+.section code {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Monaco, monospace;
+  font-size: 0.88em;
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  word-break: break-word;
+}
+.section pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: 16px 20px;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 24px 0;
+  -webkit-overflow-scrolling: touch;
+}
+.section pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+.callout {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.callout-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.callout p:last-child { margin-bottom: 0; }
+.callout.warn {
+  background: color-mix(in srgb, #B91C1C 6%, var(--bg-elevated));
+  border-color: color-mix(in srgb, #B91C1C 25%, transparent);
+}
+.callout.warn .callout-label { color: #B91C1C; }
+body.dark .callout.warn { background: color-mix(in srgb, #FCA5A5 7%, var(--bg-elevated)); border-color: color-mix(in srgb, #FCA5A5 22%, transparent); }
+body.dark .callout.warn .callout-label { color: #FCA5A5; }
+.callout.note {
+  background: var(--bg-soft);
+  border-color: var(--border-strong);
+}
+.callout.note .callout-label { color: var(--text-muted); }
+.table-wrap {
+  margin: 24px -24px;
+  padding: 0 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+.table-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to right, transparent, var(--bg));
+  pointer-events: none;
+}
+.section table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+.section table th {
+  text-align: left;
+  font-weight: 600;
+  background: var(--bg-soft);
+  padding: 10px 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.section table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.section table tr:last-child td { border-bottom: none; }
+.section table code {
+  font-size: 0.86em;
+  white-space: nowrap;
+}
+.section table strong { font-weight: 600; }
+.section hr {
+  border: none;
+  text-align: center;
+  margin: 48px 0;
+  height: 16px;
+  position: relative;
+}
+.section hr::after {
+  content: '⁂';
+  font-family: 'Fraunces', Georgia, serif;
+  color: var(--text-subtle);
+  font-size: 16px;
+  letter-spacing: 0.4em;
+}
+.lead {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  font-weight: 300;
+  margin-bottom: 28px;
+  font-style: italic;
+}
+.dropcap::first-letter {
+  font-family: 'Fraunces', Georgia, serif;
+  float: left;
+  font-size: 64px;
+  line-height: 0.85;
+  font-weight: 500;
+  margin: 6px 12px 0 0;
+  color: var(--accent);
+  font-style: normal;
+}
+.section-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--bg-soft);
+  text-decoration: none;
+  color: var(--text);
+  flex: 1;
+  max-width: 48%;
+  transition: background-color 0.2s ease;
+  background-image: none !important;
+}
+.nav-link:hover { background: var(--accent-soft); }
+.nav-link.next { text-align: right; align-items: flex-end; }
+.nav-link-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.nav-link-title {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Fraunces', Georgia, serif;
+  line-height: 1.25;
+}
+.back-top {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-top.visible { opacity: 0.92; pointer-events: auto; }
+.back-top:hover { opacity: 1; transform: translateY(-2px); }
+.toc-drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(420px, 90vw);
+  height: 100vh;
+  height: 100svh;
+  background: var(--bg-elevated);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 60;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 24px;
+  padding-top: calc(20px + env(safe-area-inset-top));
+  box-shadow: -8px 0 32px rgba(0,0,0,0.12);
+}
+.toc-drawer.open { transform: translateX(0); }
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 55;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.drawer-header h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 18px;
+  margin: 0;
+  font-weight: 500;
+}
+.drawer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.drawer-list li {
+  margin-bottom: 2px;
+}
+.drawer-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 8px;
+  text-decoration: none;
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: background-color 0.2s ease;
+}
+.drawer-list a:hover { background: var(--bg-soft); color: var(--accent); }
+.drawer-list .num {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 12px;
+  color: var(--text-subtle);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 24px;
+}
+.site-footer {
+  padding: 80px 24px calc(60px + env(safe-area-inset-bottom));
+  text-align: center;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  background: var(--bg-soft);
+}
+.site-footer .footer-symbol {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 32px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+.site-footer p {
+  margin: 8px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.site-footer .footer-meta {
+  font-size: 12px;
+  color: var(--text-subtle);
+  margin-top: 16px;
+  letter-spacing: 0.04em;
+}
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 24px 0;
+}
+.role-card {
+  padding: 16px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  border-left: 3px solid var(--accent);
+}
+.role-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+.role-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}.role-card.flippable:active { transform: scale(0.99); }.role-card-back {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}.role-card.flipped .role-card-back {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}body.dark .role-card.flipped {
+  background: color-mix(in srgb, var(--cat-features) 8%, var(--bg-soft));
+}.role-card-hint .icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--text-subtle) 18%, transparent);
+  font-size: 10px;
+  line-height: 1;
+}.role-card-back-label .flag {
+  display: inline-block;
+  font-size: 14px;
+  filter: saturate(1.1);
+}.kv-list {
+  margin: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.kv-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+@media (min-width: 600px) {
+  .kv-row { grid-template-columns: minmax(140px, 0.4fr) 1fr; gap: 16px; align-items: baseline; }
+}
+.kv-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.kv-val {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+@media print {
+  .site-header, .toc-drawer, .drawer-overlay, .back-top, .progress-bar, .cover-hint { display: none !important; }
+  body { background: white; color: black; font-size: 11pt; }
+  .section { padding: 16px 0; max-width: 100%; }
+  a { color: black !important; background-image: none !important; }
+}
+@media (min-width: 768px) {
+  .section { padding: 80px 32px 60px; }
+  body { font-size: 18px; }
+  .toc-wrap { padding: 80px 32px 100px; }
+  .role-grid { grid-template-columns: 1fr 1fr; }
+}
+.fadein { opacity: 0; transform: translateY(8px); animation: fadein 0.6s ease-out forwards; }
+@keyframes fadein { to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+
+<header class="site-header">
+  <button class="icon-btn" id="menuBtn" aria-label="Open contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+  </button>
+  <a href="#cover" class="site-title" style="text-decoration:none">EUDI <em>Briefing</em></a>
+  <a class="cross-link" href="index.html" title="Open the EUDI HLR Workbench">
+    🛰 Workbench<span style="font-size:9px;margin-left:3px;color:var(--text-subtle);">↗</span>
+  </a>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<section class="cover" id="cover">
+  <div class="cover-inner">
+    <div class="kicker">A Reference for Engineers</div>
+    <h1 class="cover-title">EUDI<em>Wallet</em></h1>
+    <p class="cover-subtitle">An Engineering Briefing</p>
+    <p class="cover-tagline">Everything you need to understand and contribute to the European Digital Identity Wallet ecosystem — its regulation, architecture, protocols, trust model, and the dozens of moving parts that make it work.</p>
+    <div class="cover-stats">
+      <div class="stat"><span class="stat-num">32</span><span class="stat-label">Sections</span></div>
+      <div class="stat"><span class="stat-num">~70</span><span class="stat-label">Min read</span></div>
+      <div class="stat"><span class="stat-num">2026.05</span><span class="stat-label">Edition</span></div>
+    </div>
+  </div>
+  <div class="cover-hint">
+    <span>Scroll to begin</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<div class="toc-wrap" id="toc">
+  <div class="section-label">Contents</div>
+  <ol class="toc-list">
+    <li class="toc-item"><a class="toc-link" href="#s1"><span class="toc-num">01</span><span class="toc-title"><span class="toc-cat-dot foundation"></span>What this product is</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s2"><span class="toc-num">02</span><span class="toc-title"><span class="toc-cat-dot foundation"></span>Why it exists</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s3"><span class="toc-num">03</span><span class="toc-title"><span class="toc-cat-dot ecosystem"></span>The ecosystem</span><span class="toc-meta">5 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s4"><span class="toc-num">04</span><span class="toc-title"><span class="toc-cat-dot ecosystem"></span>What the wallet does</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s5"><span class="toc-num">05</span><span class="toc-title"><span class="toc-cat-dot architecture"></span>Reference architecture</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s6"><span class="toc-num">06</span><span class="toc-title"><span class="toc-cat-dot architecture"></span>WSCA · WSCD · Keystore</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s7"><span class="toc-num">07</span><span class="toc-title"><span class="toc-cat-dot architecture"></span>Data model</span><span class="toc-meta">6 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s8"><span class="toc-num">08</span><span class="toc-title"><span class="toc-cat-dot protocols"></span>Issuance protocol</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s9"><span class="toc-num">09</span><span class="toc-title"><span class="toc-cat-dot protocols"></span>Presentation protocols</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s10"><span class="toc-num">10</span><span class="toc-title"><span class="toc-cat-dot trust"></span>Trust model &amp; state machines</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s11"><span class="toc-num">11</span><span class="toc-title"><span class="toc-cat-dot trust"></span>Wallet Unit lifecycle</span><span class="toc-meta">4 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s12"><span class="toc-num">12</span><span class="toc-title"><span class="toc-cat-dot features"></span>Embedded disclosure policies</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s13"><span class="toc-num">13</span><span class="toc-title"><span class="toc-cat-dot features"></span>Pseudonyms</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s14"><span class="toc-num">14</span><span class="toc-title"><span class="toc-cat-dot features"></span>Qualified Electronic Signatures</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s15"><span class="toc-num">15</span><span class="toc-title"><span class="toc-cat-dot features"></span>Strong User Authentication</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s16"><span class="toc-num">16</span><span class="toc-title"><span class="toc-cat-dot features"></span>Wallet-to-Wallet</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s17"><span class="toc-num">17</span><span class="toc-title"><span class="toc-cat-dot security"></span>Privacy &amp; linkability</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s18"><span class="toc-num">18</span><span class="toc-title"><span class="toc-cat-dot security"></span>Risk register</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s19"><span class="toc-num">19</span><span class="toc-title"><span class="toc-cat-dot operations"></span>Certification</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s20"><span class="toc-num">20</span><span class="toc-title"><span class="toc-cat-dot operations"></span>User authentication &amp; WIAM</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s21"><span class="toc-num">21</span><span class="toc-title"><span class="toc-cat-dot operations"></span>Support &amp; maintenance</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s22"><span class="toc-num">22</span><span class="toc-title"><span class="toc-cat-dot trust"></span>Wallet Unit revocation</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s23"><span class="toc-num">23</span><span class="toc-title"><span class="toc-cat-dot trust"></span>Migration</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s24"><span class="toc-num">24</span><span class="toc-title"><span class="toc-cat-dot operations"></span>Dashboard, logs &amp; rights</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s25"><span class="toc-num">25</span><span class="toc-title"><span class="toc-cat-dot operations"></span>Accessibility</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s26"><span class="toc-num">26</span><span class="toc-title"><span class="toc-cat-dot reference"></span>Reference Implementation</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s27"><span class="toc-num">27</span><span class="toc-title"><span class="toc-cat-dot reference"></span>Technical Specifications</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s28"><span class="toc-num">28</span><span class="toc-title"><span class="toc-cat-dot reference"></span>Open questions</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s29"><span class="toc-num">29</span><span class="toc-title"><span class="toc-cat-dot closing"></span>Cross-cutting tradeoffs</span><span class="toc-meta">3 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#s30"><span class="toc-num">30</span><span class="toc-title"><span class="toc-cat-dot closing"></span>Glossary</span><span class="toc-meta">2 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#sA"><span class="toc-num">A</span><span class="toc-title"><span class="toc-cat-dot closing"></span>Source URLs</span><span class="toc-meta">1 min</span></a></li>
+    <li class="toc-item"><a class="toc-link" href="#sB"><span class="toc-num">B</span><span class="toc-title"><span class="toc-cat-dot closing"></span>What was not verified</span><span class="toc-meta">1 min</span></a></li>
+  </ol>
+</div>
+
+<main>
+
+<article class="section" id="s1">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-foundation)"></span>Foundations</div>
+    <span class="section-number">01</span>
+    <h2>What this <em>product</em> is</h2>
+    <div class="section-meta">~1 min · Section 1 of 32</div>
+  </header>
+  <div class="section-body">
+    <p class="lead dropcap">The European Digital Identity (EUDI) Wallet is an EU-wide, citizen-controlled, mobile-first electronic identification and attribute-presentation system. It is not a single app — it is an interoperable ecosystem.</p>
+
+    <p>Within that ecosystem:</p>
+
+    <ul>
+      <li>A <strong>Wallet User</strong> uses a <strong>Wallet Unit</strong> (an instance of a certified Wallet Solution) to receive, store, and present identity and attribute data.</li>
+      <li>The wallet can present <strong>Person Identification Data (PID)</strong> issued under a Member State's <strong>eID scheme at Level of Assurance (LoA) High</strong>, plus <strong>Qualified</strong> and <strong>non-qualified Electronic Attestations of Attributes</strong> (QEAA / PuB-EAA / EAA).</li>
+      <li>It supports <strong>proximity</strong> (offline, ISO/IEC 18013-5) and <strong>remote</strong> (online, OpenID4VP) presentation flows.</li>
+      <li>It supports <strong>Qualified Electronic Signatures (QES)</strong>, <strong>pseudonymous authentication</strong>, and <strong>Strong Customer Authentication for electronic payments</strong>.</li>
+      <li>All Member States are required to provide <strong>at least one</strong> Wallet to citizens within 24 months of the implementing acts entering into force; using the wallet is <strong>not mandatory</strong> for citizens.</li>
+    </ul>
+
+    <p>In Article 3(42) of the European Digital Identity Regulation, "European Digital Identity Wallet" is defined as <em>an electronic identification means</em>. Crucially, in ARF terms, the eID means is realised by <strong>a Wallet Unit + the PID issued to it + the eID scheme it operates under</strong>, taken together. A Wallet Solution alone is not the eID means.</p>
+
+    <div class="callout note">
+      <div class="callout-label">Status of the ARF</div>
+      <p>The ARF is <strong>informative</strong>. The only legally binding texts are Regulation (EU) 2024/1183 (the European Digital Identity Regulation) and the adopted Commission Implementing Regulations (CIRs).</p>
+    </div>
+  </div>
+  <nav class="section-nav">
+    <a href="#cover" class="nav-link prev"><span class="nav-link-label">← Cover</span><span class="nav-link-title">Beginning</span></a>
+    <a href="#s2" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Why it exists</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s2">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-foundation)"></span>Foundations</div>
+    <span class="section-number">02</span>
+    <h2>Why it <em>exists</em></h2>
+    <div class="section-meta">~3 min · Regulatory &amp; legal context</div>
+  </header>
+  <div class="section-body">
+    <h3>The Regulation</h3>
+    <p>The base law is <strong>Regulation (EU) 2024/1183</strong>, which amends Regulation (EU) No 910/2014 (the original eIDAS Regulation) to establish the European Digital Identity Framework. It mandates Wallet provision, defines the legal effects of attestations, sets requirements for QTSPs and Trust Services, and creates the institutional structure for governance.</p>
+
+    <h3>The Toolbox &amp; the EDICG</h3>
+    <p>Commission Recommendation (EU) 2021/946 (3 June 2021) created a <strong>Common Union Toolbox</strong> consisting of:</p>
+    <ul>
+      <li>the <strong>Architecture and Reference Framework</strong> (this body of work),</li>
+      <li>a set of <strong>common standards and technical specifications</strong>, and</li>
+      <li>a set of <strong>common guidelines and best practices</strong>.</li>
+    </ul>
+    <p>The <strong>European Digital Identity Cooperation Group</strong> (EDICG, formerly the eIDAS Expert Group) is the body that drives the work. It exchanges best practice, advises the Commission on draft Implementing/Delegated Acts, supports Supervisory Bodies, and organises peer reviews of eID schemes.</p>
+
+    <h3>The Commission Implementing Regulations</h3>
+    <p>These are legally binding. The ARF currently reflects the following adopted CIRs — memorise the numbers, they are referenced throughout the spec.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>CIR</th><th>Subject</th></tr></thead>
+        <tbody>
+          <tr><td><strong>2024/2977</strong></td><td>PID and EAA</td></tr>
+          <tr><td><strong>2024/2979</strong></td><td>Integrity &amp; core functionalities</td></tr>
+          <tr><td><strong>2024/2980</strong></td><td>Ecosystem notifications</td></tr>
+          <tr><td><strong>2024/2981</strong></td><td>Certification of Wallet Solutions (incl. Annex I = Risk Register)</td></tr>
+          <tr><td><strong>2024/2982</strong></td><td>Protocols &amp; interfaces</td></tr>
+          <tr><td><strong>2025/846</strong></td><td>Cross-border identity matching</td></tr>
+          <tr><td><strong>2025/847</strong></td><td>Reactions to security breaches of Wallets</td></tr>
+          <tr><td><strong>2025/848</strong></td><td>Registration of wallet-relying parties</td></tr>
+          <tr><td><strong>2025/849</strong></td><td>List of certified Wallets</td></tr>
+          <tr><td><strong>2025/1566</strong></td><td>Verification of identity/attributes for QC and QEAA</td></tr>
+          <tr><td><strong>2025/1567</strong></td><td>Management of remote QSCDs as qualified trust services</td></tr>
+          <tr><td><strong>2025/1568</strong></td><td>Peer reviews of eID schemes</td></tr>
+          <tr><td><strong>2025/1569</strong></td><td>QEAAs/EAAs by/on behalf of public sector body (PuB-EAA)</td></tr>
+          <tr><td><strong>2025/1570</strong></td><td>Notification of certified QSCDs</td></tr>
+          <tr><td><strong>2025/1571</strong></td><td>Annual reports by Supervisory Bodies</td></tr>
+          <tr><td><strong>2025/1572</strong></td><td>Notification &amp; verification of qualified trust service initiation</td></tr>
+          <tr><td><strong>2025/1929</strong></td><td>Time-binding &amp; accuracy of qualified electronic time stamps</td></tr>
+          <tr><td><strong>2025/1942</strong></td><td>Qualified validation services for QES/Q seals</td></tr>
+          <tr><td><strong>2025/1943</strong></td><td>Reference standards for qualified certificates</td></tr>
+          <tr><td><strong>2025/1944</strong></td><td>Qualified electronic registered delivery</td></tr>
+          <tr><td><strong>2025/1945</strong></td><td>Validation of qualified/advanced signatures/seals</td></tr>
+          <tr><td><strong>2025/1946</strong></td><td>Qualified preservation services</td></tr>
+          <tr><td><strong>2025/2160</strong></td><td>Risk management for non-qualified trust services</td></tr>
+          <tr><td><strong>2025/2162</strong></td><td>Accreditation of CABs assessing QTSPs</td></tr>
+          <tr><td><strong>CID 2025/2164</strong></td><td>Common template for trusted lists</td></tr>
+          <tr><td><strong>2025/2527</strong></td><td>Reference standards for QWAC</td></tr>
+          <tr><td><strong>2025/2530</strong></td><td>Requirements for QTSPs providing qualified trust services</td></tr>
+          <tr><td><strong>2025/2531</strong></td><td>Qualified electronic ledgers</td></tr>
+          <tr><td><strong>2025/2532</strong></td><td>Qualified electronic archiving services</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Other directly-relevant EU instruments</h3>
+    <ul>
+      <li><strong>Regulation (EC) 765/2008</strong> — accreditation framework that NABs (National Accreditation Bodies) operate under.</li>
+      <li><strong>PSD2 (Directive 2015/2366)</strong> Article 97 — strong customer authentication for payments; the Wallet must be capable of acting as an SCA authenticator.</li>
+      <li><strong>Commission Delegated Regulation (EU) 2018/389</strong> — RTS for SCA.</li>
+      <li><strong>Directive (EU) 2016/2102</strong> — accessibility of public-sector websites &amp; mobile apps. Compliance with <strong>EN 301 549</strong> confers a presumption of conformity.</li>
+      <li><strong>Directive (EU) 2019/882</strong> — European Accessibility Act (extends to private sector).</li>
+      <li><strong>GDPR (Regulation (EU) 2016/679)</strong> — Article 17 right to erasure is explicitly wired into wallet UI flows.</li>
+      <li><strong>CIR 2015/1502</strong> — assurance levels for eID (Wallet must hit LoA High for PID).</li>
+    </ul>
+
+    <h3>Large-Scale Pilots</h3>
+    <p>Following a 22 Feb 2022 call under the Digital Europe Programme, multiple Large-Scale Pilots — notably <strong>EWC</strong> and <strong>NOBID</strong>, plus others — have been testing the wallet across cross-border use cases, feeding back into ARF iterations. The ARF is being co-designed with running pilot deployments, not in a vacuum.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s1" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">What this is</span></a>
+    <a href="#s3" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">The ecosystem</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s3">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-ecosystem)"></span>Ecosystem</div>
+    <span class="section-number">03</span>
+    <h2>The <em>ecosystem</em></h2>
+    <div class="section-meta">~5 min · 18 roles &amp; how they relate</div>
+  </header>
+  <div class="section-body">
+    <p class="lead">The ARF defines 18 distinct roles. A single legal entity can occupy multiple roles, provided it satisfies every applicable requirement and avoids conflicts of interest.</p>
+
+    <h3>End-user side</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">User of a Wallet Unit</div>
+          <p class="role-desc">A natural person in control of the Wallet Unit. The ARF assumes the user device is personal — only the User can access/control the Wallet Unit. PIDs and attestations on the Wallet Unit pertain to that User. The legal-person Wallet topic has been <strong>removed</strong> from the ARF in favour of a separate business wallet effort.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Issuance side</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Wallet Provider</div>
+          <p class="role-desc">Member State or organisation mandated by one. Makes a <strong>certified Wallet Solution</strong> available. Responsible for the entire Wallet Unit (including WSCA/WSCD, even if integrated by a third party). Signs and issues <strong>WUAs</strong> and <strong>WIAs</strong>.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">PID Provider</div>
+          <p class="role-desc">Verifies user identity at LoA High and issues PIDs. Each Member State has at least one. Need <strong>not</strong> be a QTSP. Identified via a <strong>List of Trusted Entities (LoTE)</strong>.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">QEAA Provider</div>
+          <p class="role-desc">A <strong>QTSP</strong> issuing Qualified Electronic Attestations of Attributes. Subject to the full QTSP framework. Identified via a <strong>Trusted List</strong>.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">PuB-EAA Provider</div>
+          <p class="role-desc">A public-sector body (or designee) responsible for an Authentic Source. Holds a qualified certificate from a QTSP for signing PuB-EAAs. Listed in a Trusted List.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">EAA Provider (non-qualified)</div>
+          <p class="role-desc">Any non-qualified TSP. Supervised under the Regulation but largely governed by sectoral rules.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Authentic Source</div>
+          <p class="role-desc">Public or private repository recognised by law as the primary source for an attribute (address, age, professional qualification, etc.). A public-sector Authentic Source can also act as a PuB-EAA Provider.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">QESRC Provider</div>
+          <p class="role-desc">A QTSP operating a <strong>remote QSCD</strong> the Wallet Unit can use to create QES.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Trust infrastructure</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Trusted List / LoTE Provider</div>
+          <p class="role-desc">Maintains and publishes Trusted Lists (for QTSPs) and Lists of Trusted Entities (for non-QTSPs — Wallet Providers, PID Providers, Access CAs, Providers of Registration Certificates). <strong>There is no list for Relying Parties</strong>; instead each RP gets one or more access certificates.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Access Certificate Authority</div>
+          <p class="role-desc">Issues <strong>access certificates</strong> (qualified certificates per ETSI TS 119 411-8) to RPs and to PID/Attestation Providers. Listed in a LoTE. Can issue under a dedicated EUDI scheme or under the eIDAS QWAC scheme.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Provider of Registration Certificates</div>
+          <p class="role-desc">A <strong>QTSP</strong> issuing <strong>registration certificates</strong> — qualified certificates attesting a provider's registration status and scope. Listed in a LoTE.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Registrar</div>
+          <p class="role-desc">Per Member State, registers PID Providers, QEAA Providers, PuB-EAA Providers, EAA Providers, <strong>and Relying Parties</strong>. Publishes registry data in machine- and human-readable form (TS5 / TS6 specify the format and API).</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Service consumers</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Relying Party</div>
+          <p class="role-desc">Any service provider requesting attributes. Legally also includes Attestation Providers, but the ARF reserves the term for service providers. VLOPs are required to accept the Wallet for user authentication. Must register with their Member State's Registrar, declaring which attributes they intend to request.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Relying Party Instance</div>
+          <p class="role-desc">The technical software/hardware that interacts with Wallet Units. An RP can run multiple Instances; each gets its own access certificate. The 2026 refinement-round Topic X is pushing toward <strong>one access certificate per service</strong>.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Intermediary</div>
+          <p class="role-desc">A Relying Party acting on behalf of intermediated RPs. Legally still an RP. Must register, must not store transaction content, must immediately delete any received attributes after forwarding them.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Oversight &amp; assurance</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Conformity Assessment Body (CAB)</div>
+          <p class="role-desc">Accredited (per Reg 765/2008) by a National Accreditation Body. Certifies Wallet Solutions and audits QTSPs.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">National Accreditation Body (NAB)</div>
+          <p class="role-desc">Per Member State, accredits CABs.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Supervisory Body</div>
+          <p class="role-desc">Per Member State, supervises Wallet Providers and other ecosystem actors.</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Attestation Scheme Provider</div>
+          <p class="role-desc">Defines a specific attestation type. Publishes a <strong>human-readable Rulebook</strong> + a <strong>machine-readable scheme</strong>. The Commission publishes the PID Rulebook; sectoral bodies publish theirs. The Commission operates a <strong>Catalogue of Schemes and Rulebooks</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Platform layer</h3>
+    <div class="role-grid">
+      <div class="role-card">
+        <div class="role-card-face role-card-front">
+          <div class="role-name">Device Manufacturers &amp; subsystem providers</div>
+          <p class="role-desc">Provide hardware, OS, secure elements, libraries, app stores. The Wallet Provider is responsible for picking devices/platforms that allow the Wallet Unit to achieve LoA High.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Quick reference: arrows that matter most</h3>
+    <p>For an iOS engineer, the relationships you'll touch most are:</p>
+    <ul>
+      <li><em>PID Provider → Wallet Unit</em> — PID issuance over OpenID4VCI.</li>
+      <li><em>Attestation Provider → Wallet Unit</em> — attestation issuance over OpenID4VCI.</li>
+      <li><em>Wallet Unit ↔ Relying Party Instance</em> — presentation over OpenID4VP (remote) or ISO/IEC 18013-5 device retrieval (proximity).</li>
+      <li><em>Wallet Provider → Wallet Unit</em> — WUA / WIA issuance and lifecycle management.</li>
+      <li><em>Member State Registrar → Wallet Unit</em> — lookup of RP registration data via TS5 API (when no registration certificate is provided).</li>
+      <li><em>Authentic Source → QEAA Provider</em> — attribute verification (Topic 42).</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s2" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Why it exists</span></a>
+    <a href="#s4" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">What the wallet does</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s4">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-ecosystem)"></span>Ecosystem</div>
+    <span class="section-number">04</span>
+    <h2>What the <em>wallet does</em></h2>
+    <div class="section-meta">~2 min · User-facing functionality</div>
+  </header>
+  <div class="section-body">
+    <p>The Wallet is built around four functional clusters.</p>
+
+    <h3>Identification &amp; authentication</h3>
+    <ul>
+      <li>Selectively disclose attributes — selective disclosure is mandatory in both formats.</li>
+      <li>Securely authenticate the <strong>Relying Party</strong> before disclosure (the Wallet must verify the RP, not just trust it).</li>
+      <li>Onboard with PID/Attestation Providers using existing eID schemes.</li>
+      <li>Inform the user whether the RP is registered for the requested attributes; warn if not.</li>
+      <li>Provide a <strong>dashboard</strong> for transaction history with: review past interactions, request data erasure (GDPR Art. 17), report suspicious RPs to the Data Protection Authority.</li>
+    </ul>
+
+    <h3>Attribute exchange</h3>
+    <ul>
+      <li>Request, store, present PIDs / attestations under the User's <strong>sole control</strong>.</li>
+      <li><strong>Backup</strong> attributes / configurations (Topic 34 — Migration Object).</li>
+      <li>Prevent RP linkability through the issuance methods discussed later.</li>
+    </ul>
+
+    <h3>Qualified Electronic Signatures</h3>
+    <ul>
+      <li>Available <strong>by default and free of charge</strong> within the Wallet for non-professional purposes — a hard regulatory requirement.</li>
+      <li>Backed by either a <strong>local QSCD</strong>, an <strong>external QSCD</strong>, or a <strong>remote QSCD</strong> managed by a QTSP (QESRC Provider).</li>
+      <li>Must produce PAdES-baseline signatures at minimum; SHOULD support XAdES, JAdES, CAdES, ASiC.</li>
+    </ul>
+
+    <h3>Pseudonyms</h3>
+    <ul>
+      <li>Generate, store (encrypted, locally), and present pseudonyms.</li>
+      <li>Pseudonyms must be <strong>specific and unique per RP</strong> (CIR 2024/2979 Art 14).</li>
+      <li>RPs <strong>cannot refuse pseudonyms</strong> when identification is not legally required.</li>
+      <li>Four use cases — only (A) is fully required by current CIR; B partial; C/D need additional spec work.</li>
+    </ul>
+
+    <h3>Use cases manual</h3>
+    <p>The ARF mentions a forthcoming <strong>Use Cases Manual</strong> distributed alongside the ARF, with standardised blueprints for: online identification, QES, mobile Driving Licence, payment SCA, representation paradigm, and others (health data, educational credentials, Digital Travel Credentials, CBDC, social security incl. PDA1 and EHIC).</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s3" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">The ecosystem</span></a>
+    <a href="#s5" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Reference architecture</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s5">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-architecture)"></span>Architecture</div>
+    <span class="section-number">05</span>
+    <h2>Reference <em>architecture</em></h2>
+    <div class="section-meta">~3 min · Components &amp; interfaces</div>
+  </header>
+  <div class="section-body">
+    <h3>The Wallet Unit (composite)</h3>
+    <p>A Wallet Unit is a <strong>composite</strong> — <em>not just an app</em>. It comprises:</p>
+    <ol>
+      <li><strong>Wallet Instance (WI)</strong> — the application installed/configured on the user's device. Handles UI, presentation flows, OpenID4VP/VCI orchestration, transaction logging, dashboard, data subject rights features, and communication with the WSCA/WSCD or keystore.</li>
+      <li><strong>Wallet Secure Cryptographic Device (WSCD)</strong> — a tamper-resistant device that protects critical assets (PID private keys, WUA private keys) and provides cryptographic operations.</li>
+      <li><strong>Wallet Secure Cryptographic Application (WSCA)</strong> — the application linked to the WSCD that manages critical assets via the WSCD's primitives.</li>
+      <li><strong>Keystore</strong> <em>(distinct concept since recent revisions)</em> — a hardware-backed repository for <strong>non-critical</strong> cryptographic assets (keys for attestations not requiring LoA High). Examples: Secure Element, TPM, TEE, secure enclave, or remote HSM.</li>
+      <li><strong>Storage component</strong> — encrypted local storage for PIDs, attestations, configuration, and transaction logs.</li>
+    </ol>
+    <p>A Wallet Solution is the <em>combination of software, hardware, services, settings, and configurations</em> a Wallet Provider makes available; a Wallet Unit is <em>one configured instance of that Solution issued to one User</em>.</p>
+
+    <div class="callout">
+      <div class="callout-label">⚑ Critical asset rule (memorise this)</div>
+      <p>Anything whose compromise (availability, confidentiality, integrity) would have a <strong>very serious, debilitating effect</strong> on trust in the Wallet Unit is a <strong>critical asset</strong> and <strong>must</strong> live in a WSCA/WSCD. Examples: private/secret keys for the <strong>PID</strong>, for <strong>WUAs</strong>, and for <strong>attestations whose level of security is High</strong>. Other keys may live in a <strong>keystore</strong> instead. <em>(Annex 1 + WIAM_14 family.)</em></p>
+    </div>
+
+    <h3>Five design principles</h3>
+    <ol>
+      <li><strong>User-centricity</strong> — sole user control, clear UX, options to revoke or request deletion.</li>
+      <li><strong>Accessibility</strong> — must comply with EN 301 549, EAA, etc.</li>
+      <li><strong>Interoperability</strong> — standardised data formats, protocols, machine-readable schemes, cross-border recognition.</li>
+      <li><strong>Privacy by design</strong> — selective disclosure, holder + device binding, pseudonyms, unlinkability, minimisation, embedded disclosure policies, transaction logs accessible only to the user.</li>
+      <li><strong>Security by design</strong> — layered controls; cryptographic protection through the lifecycle; certification of Wallet Solutions; incident notification (CIR 2025/847).</li>
+    </ol>
+
+    <h3>Interfaces a Wallet Unit must implement</h3>
+    <ul>
+      <li><strong>Issuance interface</strong> (HTTPS to PID/Attestation Providers): mutual auth, OpenID4VCI, supports initial issuance and re-issuance.</li>
+      <li><strong>Proximity presentation interface</strong>: ISO/IEC 18013-5 over NFC, BLE, or Wi-Fi; mutual authentication; selective disclosure; cryptographic device + holder binding proofs.</li>
+      <li><strong>Remote presentation interface</strong>: OpenID4VP per HAIP profile; same-device (HTTP redirect, Android Intent, iOS URL scheme, deep link) and cross-device (QR code with one-time-use token over a secure back-channel); RP authenticated via access certificate; encrypted response (OIA_09).</li>
+      <li><strong>Revocation checking</strong>: status-list / CRL / OCSP-style mechanisms; supports both online and offline checking; fallback when revocation services unavailable.</li>
+      <li><strong>User authentication interface</strong>: multi-factor, possibly biometric, OS PIN, or Wallet-Unit-specific PIN; recovery mechanisms.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s4" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">What the wallet does</span></a>
+    <a href="#s6" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">WSCA · WSCD · Keystore</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s6">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-architecture)"></span>Architecture</div>
+    <span class="section-number">06</span>
+    <h2>WSCA · WSCD · <em>Keystore</em></h2>
+    <div class="section-meta">~3 min · The cryptographic substrate</div>
+  </header>
+  <div class="section-body">
+    <h3>The five WSCD architectures</h3>
+    <p>The ARF (Section 4.5) explicitly enumerates <strong>five</strong> WSCD architecture types, plus hybrids:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Where keys live</th><th>Network?</th><th>Threat-model fit</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Remote WSCD</strong></td><td>Wallet Provider's HSM-backed server</td><td>Yes</td><td>High-risk personal devices; institutional deployments</td></tr>
+          <tr><td><strong>Local External WSCD</strong></td><td>Detachable hardware (USB key, smartcard, hardware wallet)</td><td>No</td><td>High-security; shared/borrowed devices</td></tr>
+          <tr><td><strong>Local Internal WSCD</strong></td><td>TEE / Secure Enclave / dedicated co-processor on device</td><td>No</td><td>General consumer mobile case</td></tr>
+          <tr><td><strong>Local Native WSCD</strong></td><td>OS-managed key storage; no dedicated HW isolation</td><td>No</td><td>Trusted environments; convenience-first</td></tr>
+          <tr><td><strong>Hybrid</strong></td><td>Combinations of the above</td><td>Mixed</td><td>Most realistic deployments</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Engineering implications</h4>
+    <ul>
+      <li>The ARF is <strong>architecture-neutral</strong>. An iOS Wallet using Secure Enclave is a <em>Local Internal WSCD</em>; one using Apple Smart Card kit + a YubiKey is <em>Local External</em>; one using an MDM-managed remote HSM is <em>Remote</em>.</li>
+      <li>Whichever you pick, the <strong>Wallet Solution as a whole</strong> must be certified at LoA High. Individual components may be certified lower if duly justified (CIR 2024/2981 + CIR 2015/1502).</li>
+      <li>The Wallet Provider is <strong>responsible for the WSCD</strong> even if Apple/Google supplied it. Other ecosystem actors don't need to interact with or trust the WSCD vendor directly.</li>
+    </ul>
+
+    <h3>Keystore vs. WSCA/WSCD</h3>
+    <p>Critical assets → WSCA/WSCD. Non-critical → keystore (hardware-backed). Most attestations issued for sensitive use cases (PID, WUA, signatures, payment SCA) require WSCA/WSCD; lower-assurance attestations (event tickets, vouchers, etc.) may live in a keystore.</p>
+
+    <h3>WUA, WIA, and KA</h3>
+    <ul>
+      <li><strong>WUA</strong> — historically a single attestation by the Wallet Provider that the Wallet Unit and its components conform to requirements and that listed public keys belong to the Wallet Unit.</li>
+      <li>The 2026 Topic C refinement is splitting this:
+        <ul>
+          <li><strong>WIA</strong> = attestation to the integrity/authenticity of the Wallet Instance (the app), used during <em>all</em> PID/attestation issuance.</li>
+          <li><strong>KA (Key Attestation)</strong> = attestation to the WSCA/WSCD or keystore properties for the keys involved, used only for PID and device-bound attestations.</li>
+          <li>"WUA" becomes the umbrella term.</li>
+        </ul>
+      </li>
+      <li><strong>Revocation semantics differ:</strong> WIA revocation means the Wallet Instance is revoked; KA revocation means the WSCD/keystore is revoked (either type-shared across all units of that WSCD type, or per-instance).</li>
+      <li><strong>Revocation maintenance period</strong> is a new concept being introduced: WUAs themselves are short-lived (TS3 caps at ~24h), so a maintenance period is communicated separately to bound how long a Wallet Provider commits to maintaining revocation status. PID expiry must not exceed this maintenance period.</li>
+    </ul>
+
+    <h3>Cryptographic algorithms</h3>
+    <p>All cryptographic operations across the ecosystem must use algorithms from the <strong>ENISA ECCG Agreed Cryptographic Mechanisms v2.0</strong>. Hardware-level cryptography also references ENISA EUCC Cryptographic Guidelines v2.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s5" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Reference architecture</span></a>
+    <a href="#s7" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Data model</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s7">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-architecture)"></span>Architecture</div>
+    <span class="section-number">07</span>
+    <h2>Data <em>model</em></h2>
+    <div class="section-meta">~6 min · Attestations, formats, rulebooks</div>
+  </header>
+  <div class="section-body">
+    <h3>Attestation elements</h3>
+    <p>Every attestation has: issuer info, subject identification, attribute data, validity period, proof mechanism, metadata.</p>
+
+    <h3>Categories</h3>
+    <ul>
+      <li><strong>PID</strong> — LoA High, device-bound, Member-State-issued, eID-scheme operated.</li>
+      <li><strong>QEAA</strong> — qualified, by QTSP, full eIDAS trust framework.</li>
+      <li><strong>PuB-EAA</strong> — issued by/on behalf of a public-sector Authentic Source; signed under a QTSP-issued qualified certificate.</li>
+      <li><strong>EAA</strong> — non-qualified, sectoral.</li>
+    </ul>
+
+    <h3>Formats</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Format</th><th>Spec</th><th>Encoding</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td><strong>mdoc</strong></td><td>ISO/IEC 18013-5</td><td>CBOR</td><td>Proximity (NFC/BLE/QR), offline</td></tr>
+          <tr><td><strong>mdoc</strong></td><td>ISO/IEC 23220-2</td><td>CBOR</td><td>Card-based identification</td></tr>
+          <tr><td><strong>SD-JWT VC</strong></td><td>IETF draft-ietf-oauth-sd-jwt-vc</td><td>JWT/JSON</td><td>Remote/web; rich SD proofs</td></tr>
+          <tr><td><strong>W3C VC</strong></td><td>W3C VCDM 2.0 + VC-JOSE-COSE / Data Integrity</td><td>JSON-LD</td><td>Cross-ecosystem credentials</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">⚑ Rules of thumb</div>
+      <ul style="margin: 8px 0 0 0;">
+        <li>A <strong>PID</strong> must be issued in <strong>both</strong> mdoc and SD-JWT VC (PID_02).</li>
+        <li>An <strong>mDL</strong> must be mdoc-only and <strong>must not</strong> be SD-JWT VC.</li>
+        <li>A QEAA / PuB-EAA scheme must specify mdoc, SD-JWT VC, or both (ARB_01). Non-qualified EAAs may also use W3C VCDM 2.0 (ARB_01a).</li>
+        <li>Any attestation usable in <strong>proximity must</strong> be mdoc (ARB_02), because OpenID4VP requires internet.</li>
+      </ul>
+    </div>
+
+    <h3>PID Rulebook (Annex 3.01)</h3>
+    <ul>
+      <li>mdoc attestation type: <code>eu.europa.ec.eudi.pid.1</code>. Namespace identifier identical.</li>
+      <li>SD-JWT VC base type: <code>urn:eudi:pid:1</code>.</li>
+      <li>Mandatory attributes (CIR 2024/2977): <code>family_name</code>, <code>given_name</code>, <code>birth_date</code>, <code>birth_place</code>, <code>nationality</code>.</li>
+      <li>Optional: <code>resident_address</code>, <code>resident_country</code>, <code>resident_state</code>, <code>resident_city</code>, <code>resident_postal_code</code>, <code>resident_street</code>, <code>resident_house_number</code>, <code>personal_administrative_number</code>, <code>portrait</code>, <code>family_name_birth</code>, <code>given_name_birth</code>, <code>sex</code>, <code>email_address</code>, <code>mobile_phone_number</code>.</li>
+      <li>Mandatory metadata: <code>expiry_date</code>, <code>issuing_authority</code>, <code>issuing_country</code>. Optional: <code>document_number</code>, <code>issuing_jurisdiction</code>, <code>location_status</code>.</li>
+      <li>Additional optional rulebook attributes: <code>issuance_date</code>, <code>trust_anchor</code>, <code>attestation_legal_category</code> (= "PID").</li>
+      <li><strong>Portrait</strong>: single JPEG, ISO/IEC 19794-5 quality (Full Frontal Image) but <strong>without</strong> the format headers/blocks. JPEG only.</li>
+      <li><strong>CBOR encoding</strong>: minimum-length integers/strings/arrays/maps, no indefinite-length items, no fractional seconds, UTC offset only ("Z"), <code>tstr</code> ≤ 150 chars, full Unicode.</li>
+      <li><strong>Administrative</strong> vs. <strong>technical</strong> validity: administrative is the long PID validity (years); technical is the per-token validity (days/weeks). PID Providers re-issue technically-fresh PIDs throughout the administrative period to limit linkability.</li>
+      <li>For SD-JWT VC: standard JWT <code>nbf</code> / <code>exp</code> for technical validity; nested properties supported (<code>address.street_address</code>, etc.) for granular selective disclosure.</li>
+      <li><strong>Domestic namespaces</strong>: PID Providers may extend with a domestic namespace, e.g. <code>eu.europa.ec.eudi.pid.de.1</code>. Must be published in a Rulebook compliant with Topic 12.</li>
+      <li><strong>Selective disclosure of <code>nationality</code></strong> in mdoc: the entire array is disclosed together; SD-JWT VC permits selective disclosure of individual nationalities.</li>
+    </ul>
+
+    <h3>mDL Rulebook (Annex 3.02)</h3>
+    <ul>
+      <li>Fully delegated to ISO/IEC 18013-5; no EUDI-specific changes.</li>
+      <li><strong>mDL must be mdoc-only</strong> — not SD-JWT VC.</li>
+      <li>Detailed attribute schema lives in the <code>eudi-doc-attestation-rulebooks-catalog</code> repo (the page in the ARF site is a redirect notice).</li>
+    </ul>
+
+    <h3>Attestation Rulebooks &amp; Schemes</h3>
+    <p>For <em>any</em> attestation type:</p>
+    <ul>
+      <li>The Scheme Provider publishes a <strong>Rulebook</strong> (human-readable) and a <strong>scheme</strong> (machine-readable).</li>
+      <li>Each format gets a specified attribute encoding (CBOR for mdoc, JSON for SD-JWT VC).</li>
+      <li>For mdoc: each attribute lives in an <strong>attribute namespace</strong> with a globally unique identifier; each attribute identifier is unique within the namespace.</li>
+      <li>For SD-JWT VC: claim names must be either an IANA-registered JWT claim, an RFC 7519 Public Name, or a Private Name specific to the type.</li>
+      <li>Mandatory / optional / conditional presence specified per attribute.</li>
+      <li>For QEAA / PuB-EAA: Rulebook must include the <code>attestation_legal_category</code> attribute (ARB_25), the <code>cryptographically_bound_to</code> attribute when applicable (ARB_28), and use the <strong>Attestation Rulebook Template</strong> in the catalog repo (ARB_29).</li>
+      <li>For SD-JWT VC, every claim must have its selective-disclosability declared (ARB_30); a Type Metadata Document is recommended (ARB_31).</li>
+      <li>Each Rulebook also declares whether the attestation is device-bound (ARB_34).</li>
+    </ul>
+
+    <h3>Catalogues</h3>
+    <ul>
+      <li><strong>Catalogue of Attributes</strong> — standardised attribute identifiers, semantics, types, encoding, multilingual labels (Topic 25).</li>
+      <li><strong>Catalogue of Attestation Schemes</strong> — the canonical registry of available attestation types, their Rulebook URLs, scheme URLs, version info, applicability, attributes.</li>
+      <li>The Commission operates the catalogue infrastructure; CIR 2025/1569 Article 8 governs it; Technical Specification <strong>TS11</strong> specifies interfaces and formats.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s6" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">WSCA · WSCD · Keystore</span></a>
+    <a href="#s8" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Issuance protocol</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s8">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-protocols)"></span>Protocols</div>
+    <span class="section-number">08</span>
+    <h2>Issuance <em>protocol</em></h2>
+    <div class="section-meta">~2 min · OpenID4VCI + the four methods</div>
+  </header>
+  <div class="section-body">
+    <h3>Protocol</h3>
+    <p>Base protocol: <strong>OpenID for Verifiable Credential Issuance (OpenID4VCI)</strong>, profiled per the <strong>OpenID4VC High Assurance Interoperability Profile (HAIP)</strong>.</p>
+
+    <h3>Required steps (Section 6.6.2)</h3>
+    <ol>
+      <li>Wallet Unit authenticates the Provider (cert chain to LoTE/Trusted-List trust anchor; non-revoked; non-expired).</li>
+      <li>Provider validates the Wallet Unit:
+        <ul>
+          <li>Verifies WUA signature against Wallet Provider trust anchor in LoTE.</li>
+          <li>Optionally validates WSCA/WSCD or keystore properties (e.g. Common Criteria level).</li>
+          <li>Verifies that the new key is protected by the WSCD or keystore.</li>
+        </ul>
+      </li>
+      <li>Provider verifies WUA is not revoked.</li>
+      <li>Wallet Unit verifies the issued PID/attestation: signature, listing of provider, validity period, format.</li>
+      <li>For PIDs specifically, the user must explicitly <strong>activate</strong> the PID before it can be presented.</li>
+      <li>Optionally provisioning of an <strong>embedded disclosure policy</strong>.</li>
+      <li>Optionally <strong>batch issuance</strong> for efficiency (one Wallet Unit verification, multiple attestations issued).</li>
+    </ol>
+
+    <h3>The four issuance methods (Topic 10)</h3>
+    <p>The single most important privacy-engineering decision in the protocol.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Name</th><th>What it does</th><th>Mandatory?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A</strong></td><td>Once-only attestations</td><td>Issued in batches; each used <strong>exactly once</strong>, then discarded</td><td>Mandatory for WUAs; mandatory minimum (A or B) for all PIDs/attestations</td></tr>
+          <tr><td><strong>B</strong></td><td>Limited-time</td><td>Valid for a short period; multiple uses; periodic re-issuance</td><td>Mandatory minimum (A or B)</td></tr>
+          <tr><td><strong>C</strong></td><td>Rotating-batch</td><td>Issued in batches; used in random order; once all used, batch resets</td><td>Optional</td></tr>
+          <tr><td><strong>D</strong></td><td>Per-Relying Party</td><td>Wallet issues a different attestation per RP; same RP gets the same one</td><td>Optional</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Method A maximally mitigates RP linkability; Method B is operationally simpler.</p>
+
+    <h3>Privacy-critical issuance HLRs</h3>
+    <ul>
+      <li>Unique elements (salts, hashes, identifiers, batch timestamps, public keys) <strong>must</strong> have negligible collision probability.</li>
+      <li>Batch timestamps <strong>must not</strong> be usable for user correlation.</li>
+      <li>Unique elements <strong>must be discarded</strong> post-issuance by the RP and Wallet Unit.</li>
+    </ul>
+
+    <h3>Re-issuance triggers</h3>
+    <ul>
+      <li>Limit RP linkability (issue multiple variants with different keys/SD-JWT variants).</li>
+      <li>Attribute value change (address change, qualification update).</li>
+      <li>Synchronous re-issuance during migration to a new Wallet Unit.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s7" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Data model</span></a>
+    <a href="#s9" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Presentation</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s9">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-protocols)"></span>Protocols</div>
+    <span class="section-number">09</span>
+    <h2>Presentation <em>protocols</em></h2>
+    <div class="section-meta">~3 min · Proximity &amp; remote</div>
+  </header>
+  <div class="section-body">
+    <h3>Proximity (ISO/IEC 18013-5)</h3>
+    <ul>
+      <li>Used for in-person verification (police, border, age check, mDL).</li>
+      <li>Channels: NFC, BLE, Wi-Fi (or QR-code-driven engagement).</li>
+      <li>Steps: device engagement → request transmission (attribute list, optional transactional data) → user authentication → user approval → response (selectively disclosed attributes + cryptographic proofs of device + holder binding) → RP verification.</li>
+      <li><strong>No internet required</strong> (so no real-time tracking via network logs).</li>
+      <li>The Wallet must <strong>not</strong> support ISO/IEC 18013-5 <em>server retrieval</em> (ProxId_02). Only <em>device retrieval</em> is permitted.</li>
+    </ul>
+
+    <h3>Remote (OpenID4VP)</h3>
+    <ul>
+      <li>Profiled per <strong>HAIP</strong>.</li>
+      <li>For mdoc requests over redirects: comply with HAIP §5, §5.1, §5.3.1 + the ISO mdocs profile in HAIP §6.</li>
+      <li>For SD-JWT VC: HAIP §5, §5.1, §5.3.2 + the IETF SD-JWT VCs profile in HAIP §6.</li>
+      <li>Same-device flow: HTTP redirect, Android Intent, iOS URL scheme, deep link.</li>
+      <li>Cross-device flow: QR code with one-time-use token; back-channel communication.</li>
+      <li>The presentation response <strong>must be encrypted</strong> so only the RP Instance can read it (OIA_09).</li>
+      <li>The Wallet Unit verifies the RP's access certificate (chained to a notified Access CA trust anchor), checks attribute-scope match against the registration certificate or the Registrar's online API, evaluates any embedded disclosure policy, then asks the user for approval.</li>
+    </ul>
+
+    <h3>W3C Digital Credentials API</h3>
+    <p>The ARF requires support <strong>conditionally</strong>:</p>
+    <ul>
+      <li>The API must be a W3C Recommendation.</li>
+      <li>It must satisfy the expectations in the Topic F discussion paper.</li>
+      <li>It must be broadly supported across browsers and OSes.</li>
+    </ul>
+    <p>If supported, by default the Wallet must <strong>only disclose attestation types</strong> to the framework — <strong>not</strong> the existence of attributes or their values. The user must have a global setting to disable disclosure.</p>
+
+    <h3>Multiple-attestation choice rules</h3>
+    <p>If multiple PIDs of the same encoding exist on the wallet and the RP requests "a PID", the Wallet must ask the user which to present (OIA_10). Same for attestations of the same encoding + same type (OIA_11).</p>
+
+    <h3>Privacy hygiene at the RP (OIA_16)</h3>
+    <p>The RP Instance <strong>must discard</strong> the values of all unique elements (salts, hashes, public keys, signatures, timestamps) as soon as they're no longer needed and <strong>must not</strong> transmit them to the RP backend or anyone else.</p>
+
+    <h3>Trust anchor look-up matrix</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Attestation type</th><th>Trust anchor source</th></tr></thead>
+        <tbody>
+          <tr><td>PID</td><td>PID Provider LoTE (per Topic 31)</td></tr>
+          <tr><td>QEAA</td><td>QEAA Provider Trusted List (per Reg Article 22)</td></tr>
+          <tr><td>PuB-EAA</td><td>QTSP qualified certificate that signed the PuB-EAA, validated against a Trusted List</td></tr>
+          <tr><td>Non-qualified EAA</td><td>Mechanism specified in the applicable Rulebook (often LoTE per ETSI TS 119 602; see TS11)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <nav class="section-nav">
+    <a href="#s8" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Issuance</span></a>
+    <a href="#s10" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Trust model</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s10">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-trust)"></span>Trust &amp; Lifecycle</div>
+    <span class="section-number">10</span>
+    <h2>Trust model &amp; <em>state machines</em></h2>
+    <div class="section-meta">~2 min · Lifecycles for every entity</div>
+  </header>
+  <div class="section-body">
+    <h3>State diagrams</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Entity</th><th>States</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Wallet Provider</strong></td><td>Notified ↔ Suspended ↔ Invalidated</td></tr>
+          <tr><td><strong>Wallet Solution</strong></td><td>Certified ↔ Suspended ↔ Invalidated</td></tr>
+          <tr><td><strong>Wallet Unit</strong></td><td>Active ↔ Suspended ↔ Revoked</td></tr>
+          <tr><td><strong>PID/Attestation Provider</strong></td><td>Notified ↔ Suspended ↔ Invalidated</td></tr>
+          <tr><td><strong>PID or Attestation</strong></td><td>Valid → Expired (terminal) / Valid → Revoked (terminal)</td></tr>
+          <tr><td><strong>Relying Party</strong></td><td>Registered ↔ Suspended ↔ Invalidated</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Trust-throughout-lifecycle pattern</h3>
+    <p>For each entity, Chapter 6 walks through registration → notification → certificate issuance → trust-anchor inclusion → operation → suspension/revocation. The pattern repeats and is the single most useful mental model when reading the ARF.</p>
+
+    <h3>Trust steps in a presentation</h3>
+    <p>When an RP receives a presented attestation (Section 6.6.3):</p>
+    <ol>
+      <li>Authenticate the attestation: signature + issuer trust anchor + listing in trust list + non-revocation + non-expiration + format.</li>
+      <li>Verify the attestation is not revoked (status list / CRL / OCSP).</li>
+      <li>Verify <strong>device binding</strong>: WSCD-bound key + possession proof.</li>
+      <li>Verify <strong>holder binding</strong>: either RP performs its own (KYC, biometric match) or RP <em>trusts the issuer</em> to have done so during issuance.</li>
+      <li>Verify <strong>combined presentation</strong> of attributes (if multiple): same WSCD via shared key; or issuer-embedded cryptographic commitment (<code>cryptographically_bound_to</code>); or selective-disclosure proof.</li>
+      <li>Trust the issuer to have authenticated the Wallet Unit and Wallet Provider.</li>
+      <li>Optionally trust the issuer to keep verifying revocation throughout lifetime.</li>
+    </ol>
+
+    <h3>Reporting</h3>
+    <p>The Wallet must allow the user to <strong>report a suspicious request</strong> to the supervising Data Protection Authority (Topic 50, RPT_DPA_*). It must also allow the user to <strong>request data erasure</strong> from any RP (Topic 48, DATA_DLT_*).</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s9" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Presentation</span></a>
+    <a href="#s11" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Wallet Unit lifecycle</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s11">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-trust)"></span>Trust &amp; Lifecycle</div>
+    <span class="section-number">11</span>
+    <h2>Wallet Unit <em>lifecycle</em></h2>
+    <div class="section-meta">~4 min · Install → activate → manage → revoke</div>
+  </header>
+  <div class="section-body">
+    <h3>Phases</h3>
+    <ol>
+      <li><strong>Installation</strong> of the Wallet Instance on a User device.</li>
+      <li><strong>Activation</strong> (registration with the Wallet Provider, key generation, WUA/WIA issuance).</li>
+      <li><strong>Management</strong> (issuance of PIDs/attestations, presentation, re-issuance, updates).</li>
+      <li><strong>Revocation</strong>.</li>
+      <li><strong>Uninstallation</strong> (with secure deletion of cryptographic assets).</li>
+    </ol>
+
+    <h3>Installation requirements</h3>
+    <ul>
+      <li>Distribution preferred via official OS app store (WIAM_01). Other channels permitted only with explicit user instructions on bypassing OS sideloading restrictions and on verifying authenticity (WIAM_02).</li>
+      <li>The user must verify Wallet Solution authenticity via cryptographic signature.</li>
+      <li>The user must verify the Wallet Solution is certified for the PID scheme they plan to use, and the device meets security requirements.</li>
+    </ul>
+
+    <h3>Activation flow (Topic 40)</h3>
+    <p>The Wallet Provider:</p>
+    <ol>
+      <li>Verifies the Wallet Instance is genuine (WIAM_04).</li>
+      <li>Collects necessary device + WSCA/WSCD + keystore data (WIAM_05). Three categories:
+        <ul>
+          <li><strong>Required</strong> for issuing WUA/WIA.</li>
+          <li><strong>Optional</strong> for managing the Wallet Unit.</li>
+          <li><strong>Fraud / risk signal monitoring</strong> — security-posture data only, no behavioural data, no geolocation.</li>
+        </ul>
+      </li>
+      <li>Establishes <strong>two user authentication mechanisms</strong>:
+        <ul>
+          <li><strong>OS-level</strong> authentication (mandatory for all operations).</li>
+          <li><strong>WSCD-level</strong> authentication for cryptographic operations involving critical assets at LoA High.</li>
+          <li>A Wallet-Unit-specific PIN may be additionally enforced (WIAM_15b).</li>
+        </ul>
+      </li>
+      <li>Issues at least one WUA per WSCA/WSCD plus one WUA per keystore (WIAM_10), and verifies the corresponding private keys are protected.</li>
+      <li>Sets up a <strong>user account</strong> at the Wallet Provider, usable for revocation requests in case of theft/loss. Authentication methods independent of the device. The user may register an alias (WIAM_06).</li>
+      <li>Issues a means for the user to verify the Wallet Solution's certification status (WIAM_10a).</li>
+    </ol>
+
+    <h3>Communication between Wallet Provider and Wallet Instance</h3>
+    <p>Mutually authenticated; should be encrypted (WIAM_12).</p>
+
+    <div class="callout warn">
+      <div class="callout-label">⚠ Privacy guard against the Wallet Provider</div>
+      <p>WIAM_12a requires the Wallet Unit to ensure that the <strong>Wallet Provider cannot access</strong>: which attestations are present; their status; attribute values; or contents of the transaction log.</p>
+      <p>The Wallet Provider runs the infrastructure but is <strong>not</strong> allowed to surveil what the user does with the wallet.</p>
+    </div>
+
+    <h3>Uninstallation</h3>
+    <p>On uninstall, the Wallet Instance requests the WSCA/WSCD and keystore(s) to delete all cryptographic assets related to the Wallet Unit and its PIDs/device-bound attestations (if connected). Where the WSCD is offline (e.g. external smartcard not present), the Provider's policy decides how to handle eventual cleanup. If the Wallet supports the W3C Digital Credentials API, it must inform the framework that no PIDs/attestations are stored.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s10" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Trust model</span></a>
+    <a href="#s12" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Disclosure policies</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s12">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-features)"></span>Features</div>
+    <span class="section-number">12</span>
+    <h2>Embedded <em>disclosure policies</em></h2>
+    <div class="section-meta">~1 min · Issuer-controlled access rules</div>
+  </header>
+  <div class="section-body">
+    <p>Per CIR 2024/2979 Annex III, the Attestation Provider may embed a policy that constrains <em>who</em> may receive the attestation. The Wallet Unit evaluates and informs the user. Two policy types are explicitly required:</p>
+    <ul>
+      <li><strong>"Authorised relying parties only"</strong> — list of EU-wide unique RP identifiers (Reg_32). Wallet compares against the access certificate's RP identifier (or, if intermediated, the unique identifier of the <em>intermediated</em> RP).</li>
+      <li><strong>"Specific root of trust"</strong> — list of root/intermediate certificates allowed to sign access certificates.</li>
+    </ul>
+
+    <h3>Additional rules (EDP_*)</h3>
+    <ul>
+      <li>Policy SHOULD link to a layperson-readable explanation page (EDP_05).</li>
+      <li>Wallet evaluates policy <strong>in conjunction with</strong> the request from the RP (EDP_06).</li>
+      <li>User is informed of evaluation outcome and can deny or proceed (EDP_07).</li>
+      <li>Policy is included <strong>by value</strong> in the Issuer metadata during issuance over OpenID4VCI (EDP_09).</li>
+      <li>The Attestation Provider must <strong>revoke</strong> any attestation when its embedded disclosure policy is added/changed/deleted (EDP_11).</li>
+      <li>PIDs <strong>do not</strong> carry embedded disclosure policies — only QEAAs, PuB-EAAs, and EAAs (EDP_01).</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s11" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Wallet Unit lifecycle</span></a>
+    <a href="#s13" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Pseudonyms</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s13">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-features)"></span>Features</div>
+    <span class="section-number">13</span>
+    <h2><em>Pseudonyms</em></h2>
+    <div class="section-meta">~2 min · Four use cases &amp; the WebAuthn path</div>
+  </header>
+  <div class="section-body">
+    <h3>Use cases</h3>
+    <ul>
+      <li><strong>A — Pseudonymous authentication</strong> <em>(mandatory baseline)</em>: per-RP unique pseudonym used as account identifier.</li>
+      <li><strong>B — Attribute registration with pseudonymous auth</strong> <em>(partially supported)</em>: pseudonym + bound attribute presentation.</li>
+      <li><strong>C — Rate-limited participation</strong> <em>(needs new spec work)</em>: limit pseudonyms per scope.</li>
+      <li><strong>D — Linkable across multiple actors</strong> <em>(via attestations, but no common spec)</em>: same pseudonym used across multiple RPs.</li>
+    </ul>
+
+    <h3>Implementation paths</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Approach</th><th>Tech</th><th>Use cases supported now</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Verifiable pseudonym</strong></td><td>W3C WebAuthn / passkeys (Wallet acts as authenticator)</td><td>A; partial B</td></tr>
+          <tr><td><strong>Attested pseudonym</strong></td><td>Issued as an EAA containing the pseudonym</td><td>All in principle, but no common spec exists</td></tr>
+          <tr><td><strong>Scope rate-limited pseudonym</strong></td><td>Independent rate-limit infrastructure with privacy-preserving tokens</td><td>C (spec needed)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Critical HLRs (Topic 11)</h3>
+    <ul>
+      <li><strong>PA_15</strong>: RP <em>cannot</em> derive user identity from the pseudonym value.</li>
+      <li><strong>PA_16</strong>: <strong>Different pseudonym per RP</strong> unless the user explicitly opts otherwise.</li>
+      <li><strong>PA_17</strong>: Colluding RPs <em>cannot correlate</em> different pseudonyms.</li>
+      <li><strong>PA_18</strong>: Sufficient entropy to avoid collisions.</li>
+      <li><strong>PA_19</strong>: User-assigned aliases <strong>must never</strong> be shared with an RP.</li>
+      <li><strong>PA_20</strong>: Wallet verifies RP identity if the WebAuthn profile (PA_21) supports it; otherwise trusts the WebAuthn Client (browser) to do so via TLS. <em>(Known gap — WebAuthn presently has no native authenticator-side RP authentication.)</em></li>
+      <li><strong>PA_22</strong>: Wallet Providers MAY implement pseudonym features by acting as a WebAuthn authenticator.</li>
+      <li><strong>PA_23–PA_31</strong>: Detailed properties for any rate-limited pseudonym scheme.</li>
+    </ul>
+
+    <h3>Open questions (Topic E)</h3>
+    <ul>
+      <li>Whether to push for a <strong>WebAuthn extension</strong> to add cryptographic binding between a pseudonym and concurrently-presented attributes, or to evolve toward attestation/ZKP-based pseudonyms.</li>
+      <li>Whether to enable <strong>sectoral linkability</strong> via shared FIDO servers.</li>
+      <li>Which WebAuthn attestation modes (Basic / Attestation CA / Anonymisation CA / Self / None) should be profiled or prohibited.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s12" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Disclosure policies</span></a>
+    <a href="#s14" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">QES</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s14">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-features)"></span>Features</div>
+    <span class="section-number">14</span>
+    <h2>Qualified Electronic <em>Signatures</em></h2>
+    <div class="section-meta">~2 min · QES + QSCDs + QTSPs</div>
+  </header>
+  <div class="section-body">
+    <h3>What the Wallet must offer</h3>
+    <ul>
+      <li>Each user must have access to a <strong>qualified certificate for QES</strong> bound to a QSCD — local, external, or remote (QES_01).</li>
+      <li>Each natural-person user must have <strong>free-of-charge access</strong> for non-professional purposes to a <strong>Signature Creation Application (SCA)</strong> capable of producing PAdES-baseline signatures (QES_02).</li>
+      <li>The SCA may be embedded in the Wallet Solution or external (separate app, hosted by QTSP or RP).</li>
+      <li>The Wallet Unit must implement secure user authentication and signature/seal invocation as part of a local/external/remote QSCD (QES_03).</li>
+      <li>The Wallet Unit must support at least one of three remote-QES flows (QES_06):
+        <ul>
+          <li>Authentication to a QTSP signature web portal.</li>
+          <li>Remote QES creation <strong>channelled by the Wallet Unit</strong> (Annex 4.08).</li>
+          <li>Remote QES creation <strong>channelled by a Relying Party</strong> (Annex 4.09).</li>
+        </ul>
+      </li>
+      <li>Where the SCA is integrated and uses a <strong>remote QSCD</strong>, the wallet must support <strong>CSC API v2.0</strong> (Cloud Signature Consortium API) — QES_07.</li>
+      <li>Mandatory format: <strong>PAdES</strong> (ETSI EN 319 142-1). SHOULD also support XAdES (319 132-1), JAdES (TS 119 182-1), CAdES (EN 319 122-1), ASiC (319 162-1/2). — QES_08.</li>
+    </ul>
+
+    <h3>QTSP requirements</h3>
+    <ul>
+      <li>ETSI TS 119 431-1 + 431-2 + 119 432.</li>
+      <li><strong>SCAL 2</strong> (Sole Control Assurance Level 2) per CEN EN 419 241-1.</li>
+      <li>ETSI TS 119 101 for the Signature Creation Application (QES_24).</li>
+    </ul>
+
+    <h3>Other rules</h3>
+    <ul>
+      <li>The user must <strong>explicitly authorise</strong> each signature/seal creation (QES_14).</li>
+      <li>Wallet Units must verify, in remote signing scenarios, that the signature creation device is part of a <em>qualified</em> service operated by a QTSP (QES_15).</li>
+      <li>The Wallet must offer a <strong>history of signatures</strong> via the dashboard (QES_13, DASH_04, Annex 4.10).</li>
+      <li>Multiple-signer scenarios SHOULD be supported (QES_16).</li>
+      <li>The Wallet must produce a confirmation of signature outcome (QES_17 / 17a).</li>
+      <li>A <strong>default qualified signing service</strong> must be configured (QES_18).</li>
+    </ul>
+
+    <div class="callout note">
+      <div class="callout-label">Source caveat</div>
+      <p>Annex 4 is delivered as PDFs that I could not fully extract through the available tools. Treat the blueprints as authoritative for sequence-diagram detail; obtain them directly when implementing.</p>
+    </div>
+  </div>
+  <nav class="section-nav">
+    <a href="#s13" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Pseudonyms</span></a>
+    <a href="#s15" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">SCA / payments</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s15">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-features)"></span>Features</div>
+    <span class="section-number">15</span>
+    <h2>Strong User <em>Authentication</em></h2>
+    <div class="section-meta">~2 min · Electronic payments &amp; SCA</div>
+  </header>
+  <div class="section-body">
+    <h3>Regulatory frame</h3>
+    <p>PSD2 + Commission Delegated Regulation (EU) 2018/389 (RTS for SCA) + Regulation Article 5f(2) (uses the term "strong user authentication"). The wallet must comply with SCA when accessing a payment account online or initiating an electronic payment, and any remote action carrying payment-fraud risk.</p>
+
+    <h3>The SUA attestation (Topic 20)</h3>
+    <p>A <strong>Strong User Authentication (SUA) attestation</strong> is a dedicated, <strong>device-bound</strong> attestation issued to the Wallet Unit that allows the Wallet to satisfy SCA. The presentation request for an SUA attestation includes <strong>transactional data</strong> (e.g. payment amount, payee). The Wallet:</p>
+    <ol>
+      <li>Validates the transactional data is intended for the given attestation and conforms to the technical spec/Rulebook (SUA_07).</li>
+      <li>Renders the data in a clear, WYSIWYS manner (SUA_06 + Topic AA dialogue requirements).</li>
+      <li>Authenticates the user and obtains explicit approval.</li>
+      <li><strong>Includes</strong> (a representation of) the transactional data in the device-binding signature (using SD-JWT VC key binding or ISO/IEC 18013-5 mdoc authentication) — SUA_05.</li>
+    </ol>
+    <p>The resulting signature value is the authentication code required by PSD2.</p>
+
+    <h3>Two flow models (Topic AA)</h3>
+    <ul>
+      <li><strong>Issuer-requested (2-party)</strong>: ASPSP is both issuer and RP; supports all SCA use cases.</li>
+      <li><strong>Payee-requested (3-party)</strong>: separate issuer and RP; only payment-initiation SCA permitted.</li>
+    </ul>
+
+    <h3>Lifecycle</h3>
+    <ul>
+      <li><strong>Registration</strong>: identify+authenticate user (e.g. via PID), issue an SUA attestation linking the Wallet Unit to a service/account.</li>
+      <li><strong>SCA</strong>: every transaction signs the per-transaction data.</li>
+      <li><strong>De-registration</strong>: revoke or delete the SUA attestation.</li>
+    </ul>
+
+    <h3>Open question</h3>
+    <p>Whether native SD-JWT and mdoc mechanisms are sufficient for the authentication code, or whether additional mechanisms (e.g. JTI-based codes) are needed (Topic AA Q3).</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s14" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">QES</span></a>
+    <a href="#s16" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Wallet-to-Wallet</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s16">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-features)"></span>Features</div>
+    <span class="section-number">16</span>
+    <h2><em>Wallet-to-Wallet</em></h2>
+    <div class="section-meta">~2 min · Holder ↔ Verifier in proximity</div>
+  </header>
+  <div class="section-body">
+    <p>Topic 30 + Topic J discussion paper.</p>
+    <ul>
+      <li>A Wallet Unit can act as <strong>Holder</strong> (presenter) <strong>or Verifier</strong> (requester). Both modes are user-initiated and exit on inactivity (W2W_05–W2W_07).</li>
+      <li><strong>Proximity only</strong>: ISO/IEC 18013-5 (W2W_08).</li>
+      <li>The Holder Wallet may send a <strong>presentation offer</strong> to the Verifier Wallet (W2W_11–W2W_15) with the attributes the Holder is willing to disclose. The Verifier may pick from the offer; cannot exceed it (W2W_14).</li>
+      <li>The Verifier authenticates the human Verifier user (W2W_16) before sending a request; rate limits apply to prevent abuse (W2W_17).</li>
+      <li>The Verifier must verify each received attestation as in any RP flow (W2W_19).</li>
+      <li>The Verifier <strong>must not persistently store</strong> any received attestations (W2W_21) and must minimise in-memory retention. OIA_16 (discard unique elements) applies.</li>
+      <li>The Wallet Provider SHOULD prevent screenshots in Verifier mode (W2W_22).</li>
+    </ul>
+
+    <h3>Open in 2026 refinement (Topic J)</h3>
+    <p>Whether the Verifier Wallet must provide cryptographic device authentication bound to the protocol session. Four candidate approaches under discussion:</p>
+    <ul>
+      <li>(A) Wallet Unit Authentication Certificates (X.509)</li>
+      <li>(B) Verifier PID embedded in request</li>
+      <li>(C) Session-bound reversed prior flow</li>
+      <li>(D) WIA-based reader auth</li>
+    </ul>
+    <p>Trade-offs around new infrastructure, user friction, and Verifier privacy.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s15" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">SCA / payments</span></a>
+    <a href="#s17" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Privacy</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s17">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-security)"></span>Security</div>
+    <span class="section-number">17</span>
+    <h2>Privacy &amp; <em>linkability</em></h2>
+    <div class="section-meta">~2 min · The two linkability classes</div>
+  </header>
+  <div class="section-body">
+    <h3>Two linkability classes (7.4.3.5)</h3>
+    <ul>
+      <li><strong>Relying Party linkability</strong> — RPs (or colluding RPs / breached RPs) link presentations to track the user.</li>
+      <li><strong>Attestation Provider linkability</strong> — colluding RPs share unique attestation values back to the Provider, who then tracks user activity.</li>
+    </ul>
+
+    <h3>Mitigations</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Mitigation</th><th>RP linkability?</th><th>AP linkability?</th></tr></thead>
+        <tbody>
+          <tr><td>Discard unique elements at the RP (OIA_16)</td><td>Partial</td><td>No</td></tr>
+          <tr><td>Issuance Method A (once-only)</td><td>Full</td><td>No</td></tr>
+          <tr><td>Issuance Method B (limited-time)</td><td>Partial</td><td>No</td></tr>
+          <tr><td>Issuance Method C (rotating batch)</td><td>Partial</td><td>No</td></tr>
+          <tr><td>Issuance Method D (per-RP)</td><td>Full <em>within</em> same RP</td><td>No</td></tr>
+          <tr><td>Re-issuance rotation</td><td>Partial</td><td>No</td></tr>
+          <tr><td>Org/enforcement (RP cert revocation)</td><td>Deterrent</td><td>Deterrent</td></tr>
+          <tr><td><strong>Zero-Knowledge Proofs</strong></td><td>Full</td><td><strong>Full</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Zero-Knowledge Proofs (7.4.3.5.3, Topic 53, Topic G)</h3>
+    <div class="callout">
+      <div class="callout-label">⚑ Status</div>
+      <p><strong>No ZKP scheme is currently selected</strong> for the EUDI Wallet ecosystem. ZKP is the only known full mitigation for AP linkability when using salted-hash attestations.</p>
+    </div>
+    <p>Topic 53's HLRs (ZKP_01–ZKP_09) define what a viable scheme must do:</p>
+    <ul>
+      <li>Hide all attribute values; prove inclusion of specific attribute values; prove validity period; prove non-revocation; prove device binding.</li>
+      <li>SHOULD optionally hide the issuer.</li>
+      <li>Support attestation-of-type proofs.</li>
+      <li>Support privacy-preserving binding between an attestation and a PID.</li>
+      <li>SHOULD support pseudonym derivation from a unique-to-user attribute combined with RP-specific context.</li>
+      <li>Usable in both proximity and remote flows; latency must not destroy UX.</li>
+      <li>Generates proofs from existing mdoc / SD-JWT VC formats (SHOULD).</li>
+      <li>Adds no extra info usable for tracking.</li>
+      <li>Uses only ECCG v2 algorithms.</li>
+      <li>Does not undermine LoA High user authentication.</li>
+    </ul>
+    <p>The Commission is exploring ZKP-based age verification in particular.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s16" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Wallet-to-Wallet</span></a>
+    <a href="#s18" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Risk register</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s18">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-security)"></span>Security</div>
+    <span class="section-number">18</span>
+    <h2>Risk <em>register</em></h2>
+    <div class="section-meta">~2 min · R1–R14 + threats &amp; mitigations</div>
+  </header>
+  <div class="section-body">
+    <h3>The Risk Register (Annex I of CIR 2024/2981)</h3>
+    <h4>High-level risks (R1–R14)</h4>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">R1</div><div class="kv-val">Creation or use of an existing electronic identity</div></div>
+      <div class="kv-row"><div class="kv-key">R2</div><div class="kv-val">Creation or use of a fake electronic identity</div></div>
+      <div class="kv-row"><div class="kv-key">R3</div><div class="kv-val">Creation or use of fake attributes</div></div>
+      <div class="kv-row"><div class="kv-key">R4</div><div class="kv-val">Identity theft</div></div>
+      <div class="kv-row"><div class="kv-key">R5</div><div class="kv-val">Data theft</div></div>
+      <div class="kv-row"><div class="kv-key">R6</div><div class="kv-val">Data disclosure</div></div>
+      <div class="kv-row"><div class="kv-key">R7</div><div class="kv-val">Data manipulation</div></div>
+      <div class="kv-row"><div class="kv-key">R8</div><div class="kv-val">Data loss</div></div>
+      <div class="kv-row"><div class="kv-key">R9</div><div class="kv-val">Unauthorised transaction</div></div>
+      <div class="kv-row"><div class="kv-key">R10</div><div class="kv-val">Transaction manipulation</div></div>
+      <div class="kv-row"><div class="kv-key">R11</div><div class="kv-val">Repudiation</div></div>
+      <div class="kv-row"><div class="kv-key">R12</div><div class="kv-val">Transaction data disclosure</div></div>
+      <div class="kv-row"><div class="kv-key">R13</div><div class="kv-val">Service disruption</div></div>
+      <div class="kv-row"><div class="kv-key">R14</div><div class="kv-val">Surveillance</div></div>
+    </div>
+
+    <h4>System-related (SR1–SR3)</h4>
+    <p>Wholesale surveillance, Reputational damage, Legal non-compliance.</p>
+
+    <h4>Technical threats (TT1–TT5)</h4>
+    <p>Physical (theft / info leakage / tampering), Errors and misconfigurations, Use of unreliable sources, Failure and outages, Malicious actions (interception, phishing/spoofing, replay, brute-force, software vulnerabilities, supply-chain, malware, RNG prediction).</p>
+
+    <h3>Mitigation patterns (Section 7.4.3)</h3>
+    <ul>
+      <li><strong>Confidentiality / integrity / authenticity</strong> — TLS-style encryption of all messages, mutual authentication via Trusted List/LoTE-anchored signatures, integrity protection.</li>
+      <li><strong>Cryptographic key &amp; sensitive-data tampering</strong> — WSCA/WSCD certified hardware for critical assets; certified HSMs at issuers and CAs; option to store user attributes in WSCA/WSCD for additional malware resistance.</li>
+      <li><strong>Authorisation</strong> — registration certificates verifying providers' authorised scope; RP scope-checking against registered attributes; embedded disclosure policies.</li>
+      <li><strong>Privacy</strong> — issuance methods A–D, RP cert revocation, ZKP (future).</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s17" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Privacy</span></a>
+    <a href="#s19" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Certification</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s19">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-operations)"></span>Operations</div>
+    <span class="section-number">19</span>
+    <h2><em>Certification</em></h2>
+    <div class="section-meta">~2 min · Two-phase plan, ENISA AHWG</div>
+  </header>
+  <div class="section-body">
+    <h3>Two-phase plan</h3>
+    <ul>
+      <li><strong>Short term</strong>: National certification schemes per CIR 2024/2981. To be ready for Wallet availability before end of 2026.</li>
+      <li><strong>Medium term</strong>: A dedicated <strong>CSA-based</strong> scheme produced by ENISA, replacing the national schemes for cybersecurity requirements (national schemes may continue for functional requirements).</li>
+    </ul>
+
+    <h3>Guiding principles</h3>
+    <ul>
+      <li><strong>Harmonisation</strong> — Member States are encouraged to collaborate; reuse existing schemes (EUCC, EUCS, EU5G, FITCEM/EN 17640, others).</li>
+      <li><strong>Composite certification</strong> — final ("top-level") certification of the Wallet Solution is a composite built on EUCC etc. for components.</li>
+      <li><strong>LoA High overall</strong> — reachable even if some components are certified lower, with justification.</li>
+      <li><strong>Risk-based</strong> — the Risk Register is a baseline; scheme owners and Wallet Providers complement with architecture-specific risks.</li>
+      <li><strong>ISO/IEC 17065</strong> framework + ISO/IEC 17067 for scheme definition.</li>
+    </ul>
+
+    <h3>ENISA Ad-Hoc Working Group (AHWG)</h3>
+    <p>Drafts the candidate CSA scheme, consults the European Cybersecurity Certification Group (ECCG), then proceeds to comitology. ECCG opinion is advisory but influential.</p>
+
+    <div class="callout note">
+      <div class="callout-label">Source caveat — Annex 6</div>
+      <p>A 16-page PDF (originated in Microsoft Word, MIP-labelled). I was not able to extract its prose contents; treat it as a primary source when implementing toward certification.</p>
+    </div>
+  </div>
+  <nav class="section-nav">
+    <a href="#s18" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Risk register</span></a>
+    <a href="#s20" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">User auth &amp; WIAM</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s20">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-operations)"></span>Operations</div>
+    <span class="section-number">20</span>
+    <h2>User auth &amp; <em>WIAM</em></h2>
+    <div class="section-meta">~2 min · The most operationally critical HLRs</div>
+  </header>
+  <div class="section-body">
+    <p>The WIAM_* HLRs in Topic 40 are the most operationally important set for an app developer.</p>
+
+    <h3>Key items</h3>
+    <ul>
+      <li><strong>WIAM_14</strong> — A WSCA/WSCD managing PID critical assets must authenticate the user <strong>at LoA High</strong> before any cryptographic operation. (LoA High requires multi-factor auth meeting CIR 2015/1502 §2.2.1.)</li>
+      <li><strong>WIAM_14a</strong> — Same applies for WUA critical assets.</li>
+      <li><strong>WIAM_14b</strong> — For attestations of "level of security High", WSCD must auth user at the corresponding level. (The ARF uses "level of security" because LoA strictly applies only to eID means.)</li>
+      <li><strong>WIAM_14c</strong> — Non-critical cryptographic assets may live in a keystore.</li>
+      <li><strong>WIAM_15</strong> — Wallet Instance must use multi-factor auth via the device (one factor is device possession).</li>
+      <li><strong>WIAM_15a</strong> — Wallet Instance must enforce OS-level user authentication with adequate security policies for any operation that does <em>not</em> involve PIDs/WUAs/high-security attestations.</li>
+      <li><strong>WIAM_15b</strong> — A Wallet-Unit-specific PIN may supplement OS auth; the Wallet Provider can mandate it for all users or allow per-user choice.</li>
+      <li><strong>WIAM_16</strong> — Wallet Instance forces the device to enable session timeout / re-auth interval.</li>
+      <li><strong>WIAM_17</strong> — WSCA/WSCD must be able to authenticate at LoA High per CIR 2015/1502 §2.2.1.</li>
+      <li><strong>WIAM_19</strong> — WSCA/WSCD and keystore must be able to <strong>prove possession</strong> of a private key on Wallet Instance request (e.g. by signing a challenge).</li>
+      <li><strong>WIAM_20</strong> — WSCA/WSCD must protect a private key for its entire lifetime; key extraction in cleartext is forbidden; any encrypted export must preserve the in-WSCA protection level.</li>
+      <li><strong>WIAM_21</strong> — Whenever the WSCA/WSCD authenticates the user, the Wallet Unit SHOULD opportunistically clean up unused PID/attestation cryptographic assets (so the user isn't burdened with separate cleanup auth events).</li>
+    </ul>
+
+    <h3>Practical UX implication</h3>
+    <p>A <strong>single user authentication event</strong> is allowed to cover <strong>all cryptographic operations</strong> required to complete a single "Wallet Unit action". The Wallet Provider must define what constitutes a "Wallet Unit action", balancing UX vs security; certification verifies adequacy.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s19" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Certification</span></a>
+    <a href="#s21" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Support &amp; maintenance</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s21">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-operations)"></span>Operations</div>
+    <span class="section-number">21</span>
+    <h2>Support &amp; <em>maintenance</em></h2>
+    <div class="section-meta">~2 min · Wallet Provider monitoring</div>
+  </header>
+  <div class="section-body">
+    <p>Topic T (now integrated as Topic 56, WPSM_*).</p>
+
+    <h3>Requirements</h3>
+    <ul>
+      <li><strong>WPSM_01</strong>: WP <strong>shall</strong> monitor installed base for maintenance and document what data is collected and why. Allowed data:
+        <ul>
+          <li>Runtime errors / crash logs</li>
+          <li>UX &amp; telemetry</li>
+          <li>OS version / health</li>
+          <li>Wallet Instance SDK / library / binary versions</li>
+          <li>User locale</li>
+          <li>Supported WSCA/WSCDs and their capabilities</li>
+          <li>Unique device identifier (IDFV / persisted UUID for iOS; AndroidID for Android) — for installation tracking and detecting unrecognised identifiers</li>
+          <li>Sensor identifiers / patch levels</li>
+          <li>Hardware-level identifiers</li>
+          <li>BLE / NFC support</li>
+        </ul>
+      </li>
+      <li><strong>WPSM_02</strong>: Custom crash logging.</li>
+      <li><strong>WPSM_03</strong>: Security-posture monitoring — root/jailbreak detection, emulator detection, OS health, SDK/library versions, Wallet Instance version, WSCA/WSCD status, sensor patch levels.</li>
+      <li><strong>WPSM_04</strong>: WP must update Wallet Unit as needed for security and functionality.</li>
+    </ul>
+
+    <h3>Four-level risk posture model (Topic T)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Level</th><th>Trigger</th><th>Response</th></tr></thead>
+        <tbody>
+          <tr><td><strong>L4 Critical</strong></td><td>Root/jailbreak, debugger attach, confirmed key compromise, critical unpatched vuln</td><td>Immediate revocation</td></tr>
+          <tr><td><strong>L3 High</strong></td><td>Unpatched OS, repeated failed biometric, WSCD unavailable</td><td>Administrative suspension + step-up auth</td></tr>
+          <tr><td><strong>L2 Moderate</strong></td><td>Minor integrity issues, resource overuse</td><td>Limit functionality, re-auth</td></tr>
+          <tr><td><strong>L1 Low</strong></td><td>Patches current, integrity OK</td><td>Full functionality</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Privacy guard rails</h3>
+    <ul>
+      <li>No behavioural data, no geolocation, no VPN-detection.</li>
+      <li>Telemetry beyond baseline requires explicit consent.</li>
+      <li>Document publicly what is collected and why.</li>
+    </ul>
+    <p>This framework focuses on <strong>technical posture</strong>, not payment fraud monitoring (out of scope for ARF).</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s20" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">User auth &amp; WIAM</span></a>
+    <a href="#s22" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Wallet Unit revocation</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s22">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-trust)"></span>Trust &amp; Lifecycle</div>
+    <span class="section-number">22</span>
+    <h2>Wallet Unit <em>revocation</em></h2>
+    <div class="section-meta">~2 min · Topic 38 / WURevocation</div>
+  </header>
+  <div class="section-body">
+    <ul>
+      <li>WP must be able to revoke a Wallet Unit by revoking its WUA(s) (WURevocation_07).</li>
+      <li>WP must regularly verify Wallet Unit security; on critical/high-risk posture, <strong>immediate revocation</strong> (WURevocation_09, ties to WPSM_03).</li>
+      <li>A breach of the WSCA/WSCD ⇒ revoke <strong>the entire Wallet Unit</strong> (all WUAs across all keystores) — WURevocation_09a/b.</li>
+      <li>A breach of one keystore ⇒ revoke at least its WUAs; SHOULD revoke others; if not, document a risk analysis (WURevocation_09c).</li>
+      <li>WP must revoke on <strong>explicit user request</strong> (WURevocation_10), with user authentication.</li>
+      <li>WP must revoke on PID Provider request when <strong>the natural person has died</strong> (WURevocation_11–13). WP verifies the requester is a notified PID Provider; PID Provider must verify revocation does not harm stakeholders.</li>
+      <li>WP must inform the user of revocation <strong>within 24 hours</strong> and via an <strong>independent communication channel</strong> (WURevocation_14, 16).</li>
+      <li>A PID Provider issuing <strong>revocable PIDs</strong> must regularly check the WUA's revocation info to detect Wallet Unit revocation; if revoked, the PID Provider <strong>must</strong> revoke the PID immediately (WURevocation_18, ties to CIR 2024/2977 Article 5(4)(b)).</li>
+      <li>An Attestation Provider <strong>may</strong> revoke its attestations on Wallet Unit revocation; must publish its policy (WURevocation_19).</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s21" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Support &amp; maintenance</span></a>
+    <a href="#s23" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Migration</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s23">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-trust)"></span>Trust &amp; Lifecycle</div>
+    <span class="section-number">23</span>
+    <h2><em>Migration</em></h2>
+    <div class="section-meta">~1 min · Migration Object &amp; restore</div>
+  </header>
+  <div class="section-body">
+    <p>Topic 34 (Mig_*).</p>
+    <ul>
+      <li>Each Wallet Unit maintains a <strong>Migration Object</strong> containing transaction-log contents and a list of all PIDs/attestations (excluding WUAs/WIAs) — Mig_01.</li>
+      <li>Per TS10 — confidentiality, integrity, authenticity protected (Mig_02).</li>
+      <li>For each PID or device-bound attestation: store enough info to <strong>request re-issuance</strong> (attestation type + Provider + service supply point) — but <strong>not</strong> attribute identifiers, attribute values, or private keys (Mig_03).</li>
+      <li>For each non-device-bound attestation, the user can choose whether to store attribute identifiers + values for direct restoration without involving the Provider, or to store re-issuance metadata only (Mig_03a).</li>
+      <li>The Migration Object lives in <strong>external or remote storage</strong> of the user's choice from supported options (Mig_04).</li>
+      <li>Encrypted with user-controlled secrets (Mig_05, e.g. password-based crypto).</li>
+      <li>On restore in a new Wallet Unit, the user selects per-PID/attestation; PIDs are restored first (Mig_06–07).</li>
+      <li>Re-issuance uses the <strong>same processes and interfaces</strong> as initial issuance (Mig_11).</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s22" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Wallet Unit revocation</span></a>
+    <a href="#s24" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Dashboard &amp; logs</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s24">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-operations)"></span>Operations</div>
+    <span class="section-number">24</span>
+    <h2>Dashboard, logs &amp; <em>rights</em></h2>
+    <div class="section-meta">~3 min · DASH_* + GDPR Art. 17 + DPA reporting</div>
+  </header>
+  <div class="section-body">
+    <h3>Logging requirements</h3>
+    <ul>
+      <li>Log all transactions: issuance, presentation, W2W, pseudonym registration/presentation, signature creation, data-deletion requests, DPA reports, PID/attestation deletions (DASH_02).</li>
+      <li>Retain at least the legal minimum retention period; warn user before any deletion forced by size limits (DASH_02a).</li>
+      <li>Display all transactions through a UI overview (DASH_02b).</li>
+      <li>Per TS10 — confidentiality/integrity/authenticity protections (DASH_02c).</li>
+    </ul>
+
+    <h3>What's logged per transaction</h3>
+    <ul>
+      <li><strong>Presentation</strong>: timestamp, RP name+id+Member State, intermediary info, attestation types and attribute IDs requested vs. presented, failure reason, RP Registrar URL, RP data-deletion contact (URL/email/phone), supervising DPA contact, intended use + privacy policy URL.</li>
+      <li><strong>Presentation transaction must NOT log attribute values</strong> (DASH_03a) — log attribute <em>identifiers</em> only.</li>
+      <li><strong>W2W</strong>: timestamp, role (Holder/Verifier), attestation types and attribute IDs requested/presented, failure reason. Same — no values.</li>
+      <li><strong>Pseudonym</strong>: timestamp, RP info if known, registration-vs-presentation, failure reason.</li>
+      <li><strong>Transactional data</strong> (SUA): logged only to the extent required by the applicable Technical Specification (TS12 for PSD2 SCA: payment transaction identifier + merchant name).</li>
+      <li><strong>Signature</strong>: timestamp, document/data signed (if available), failure reason.</li>
+      <li><strong>Issuance</strong>: timestamp, Provider info, attestation type requested/issued, batch size, failure reason, whether triggered by user or by Wallet Unit, Registrar's online service URL.</li>
+      <li><strong>Deletion</strong>: timestamp, attestation type, Provider info.</li>
+    </ul>
+
+    <h3>User capabilities</h3>
+    <ul>
+      <li>Delete any transaction from the log (DASH_06a) — with consequence warning even if before legal retention end.</li>
+      <li>No other entity may delete transactions (DASH_06b).</li>
+      <li>Export transaction details to a user-chosen external/remote storage location (DASH_07).</li>
+    </ul>
+
+    <h3>Trust mark</h3>
+    <ul>
+      <li>Wallet UI must show the <strong>EUDI Wallet Trust Mark</strong>, certification info, and links to certification status (DASH_09 + TS1).</li>
+      <li>Positioning follows Commission design guidelines (DASH_09a).</li>
+    </ul>
+
+    <h3>Data deletion requests (Topic 48)</h3>
+    <p>The Wallet supports user-initiated GDPR Art. 17 erasure requests via three channels (URL in external browser, draft email, phone call) per DATA_DLT_02. Requests log to the dashboard. RPs must authenticate users before executing requests (DATA_DLT_07). All parties must comply with <strong>TS7</strong>.</p>
+
+    <h3>DPA reporting (Topic 50)</h3>
+    <p>The Wallet enables users to report suspicious presentation requests to the supervising DPA via the same three channels. If supervising-DPA contacts aren't in the log, fall back to the local DPA. Substantiating data may be attached in machine-readable form per TS10. <strong>TS8</strong> governs the format.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s23" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Migration</span></a>
+    <a href="#s25" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Accessibility</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s25">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-operations)"></span>Operations</div>
+    <span class="section-number">25</span>
+    <h2><em>Accessibility</em></h2>
+    <div class="section-meta">~1 min · EAA, EN 301 549, design guide</div>
+  </header>
+  <div class="section-body">
+    <ul>
+      <li>Mandatory compliance with applicable Directive 2016/2102 standards (ACC_01) — compliance with EN 301 549 V1.1.2 confers a presumption of conformity.</li>
+      <li>Mandatory compliance with EAA (Directive (EU) 2019/882) requirements (ACC_02).</li>
+      <li>Topic Q discussion paper (interface user/Wallet Instance) provides further detail.</li>
+    </ul>
+    <p>Annex 5.01 (Design Guide v1.1.0, Nov 2024) lists 12 design criteria covering visibility of system status, language/familiarity, user control &amp; freedom, consistency &amp; standards, error prevention, recognition over recall, flexibility, minimalist design, error recognition/recovery, help &amp; docs, accessibility (one-handed bottom-half layout, 4.5:1 contrast, 2× font scaling support, motion guidelines, screen-reader support), and writing style.</p>
+    <p>Eight priority areas: user authentication, browsing credentials, QR presentation, confirmation/summary/results, error messages, privacy/security visualisation, trust mark, notifications.</p>
+    <p>Annex 5.02 (Data Sharing Scenarios) covers four flow types — remote same-device, remote cross-device, proximity supervised, proximity unsupervised — with auth methods and error scenarios.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s24" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Dashboard &amp; logs</span></a>
+    <a href="#s26" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Reference Implementation</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s26">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-reference)"></span>Reference</div>
+    <span class="section-number">26</span>
+    <h2>Reference <em>Implementation</em></h2>
+    <div class="section-meta">~3 min · Repos, services, demo environments</div>
+  </header>
+  <div class="section-body">
+    <div class="callout warn">
+      <div class="callout-label">⚠ Disclaimer</div>
+      <p>From the official README: "initial development release version… reduced security, privacy, availability, and reliability standards… we strongly recommend not putting this version of the software into production use." Treat the reference impl as a learning + interop-testing target, not a production base.</p>
+    </div>
+
+    <p>GitHub org: <strong><code>eu-digital-identity-wallet</code></strong>. Dev hub: <code>eu-digital-identity-wallet.github.io</code>. Public roadmap: <code>eudi-wallet-reference-implementation-roadmap</code>. Support: <code>CNECT-EUDIW-SUPPORT@ec.europa.eu</code>.</p>
+
+    <h3>Mobile Wallet apps</h3>
+    <ul>
+      <li><code>eudi-app-android-wallet-ui</code> — Android Wallet UI (also includes a demo app for proximity, same-device online presentation, PID + mDL issuance).</li>
+      <li><code>eudi-app-ios-wallet-ui</code> — iOS Wallet UI (same demo set).</li>
+    </ul>
+
+    <h3>Coordinator libraries</h3>
+    <ul>
+      <li><code>eudi-lib-android-wallet-core</code> (Android) — Wallet Core: coordinator between UI and the lower libraries.</li>
+      <li><code>eudi-lib-ios-wallet-kit</code> (iOS) — Wallet Kit: same role on iOS.</li>
+    </ul>
+
+    <h3>ISO/IEC 18013-5 (proximity) libraries</h3>
+    <ul>
+      <li>iOS: <code>eudi-lib-ios-iso18013-security</code>, <code>eudi-lib-ios-iso18013-data-transfer</code>, <code>eudi-lib-ios-iso18013-data-model</code>.</li>
+      <li>Android: <code>eudi-lib-android-iso18013-data-transfer</code>.</li>
+    </ul>
+
+    <h3>Remote presentation libraries</h3>
+    <ul>
+      <li>iOS: <code>eudi-lib-ios-presentation-exchange-swift</code>, <code>eudi-lib-ios-siop-openid4vp-swift</code>, <code>eudi-lib-sdjwt-swift</code>.</li>
+      <li>Android: <code>eudi-lib-jvm-presentation-exchange-kt</code>, <code>eudi-lib-jvm-siop-openid4vp-kt</code>, <code>eudi-lib-jvm-sdjwt-kt</code>.</li>
+    </ul>
+
+    <h3>Issuance libraries</h3>
+    <ul>
+      <li>iOS: <code>eudi-lib-ios-openid4vci-swift</code>.</li>
+      <li>Android: <code>eudi-lib-jvm-openid4vci-kt</code>.</li>
+    </ul>
+
+    <h3>Storage / cryptographic management</h3>
+    <ul>
+      <li>iOS: <code>eudi-lib-ios-wallet-storage</code> (mDoc Document Storage).</li>
+      <li>Android: <code>eudi-lib-android-wallet-document-manager</code>.</li>
+    </ul>
+
+    <h3>Revocation (Token Status List)</h3>
+    <ul>
+      <li>Kotlin Multiplatform: <code>eudi-lib-kmp-statium</code>.</li>
+      <li>Swift: <code>eudi-lib-ios-statium-swift</code>.</li>
+    </ul>
+
+    <h3>Remote QES (rQES) libraries</h3>
+    <ul>
+      <li>Low-level (CSC API v2): <code>eudi-lib-jvm-rqes-csc-kt</code>, <code>eudi-lib-ios-rqes-csc-swift</code>.</li>
+      <li>Core: <code>eudi-lib-android-rqes-core</code>, <code>eudi-lib-ios-rqes-kit</code>.</li>
+      <li>UI: <code>eudi-lib-android-rqes-ui</code>, <code>eudi-lib-ios-rqes-ui</code>.</li>
+    </ul>
+
+    <h3>Verifier (RP) services</h3>
+    <ul>
+      <li><code>eudi-web-verifier</code> — frontend at <code>verifier.eudiw.dev</code>.</li>
+      <li><code>eudi-srv-web-verifier-endpoint-23220-4-kt</code> — backend RESTful service.</li>
+    </ul>
+
+    <h3>Issuer services</h3>
+    <ul>
+      <li><code>eudi-srv-web-issuing-eudiw-py</code> — Python OpenID4VCI issuer (<code>issuer.eudiw.dev</code>).</li>
+      <li><code>eudi-srv-pid-issuer</code> — Kotlin OpenID4VCI issuer (<code>issuer-backend.eudiw.dev</code>).</li>
+    </ul>
+
+    <h3>Signing services</h3>
+    <ul>
+      <li><code>eudi-srv-web-trustprovider-signer-java</code> — TrustProvider Signer (<code>trustprovider.signer.eudiw.dev/tester</code>).</li>
+      <li><code>eudi-srv-web-walletdriven-rpcentric-signer-qtsp-java</code> — wallet-driven QTSP for remote QES; CSC v2 endpoints; OpenID4VP-based authentication.</li>
+      <li><code>eudi-srv-web-walletdriven-signer-external-sca-java</code> — wallet-driven SCA; computes hashes and obtains signed documents.</li>
+      <li><code>eudi-srv-web-rpcentric-signer-sca-java</code> — RP-centric SCA REST API.</li>
+    </ul>
+
+    <h3>Demo / conformance</h3>
+    <ul>
+      <li>Demo verifier UI at <code>verifier.eudiw.dev</code>.</li>
+      <li>Demo issuer at <code>issuer.eudiw.dev</code>.</li>
+      <li>Functional Conformance: <code>conformance.eudi.dev/latest/</code>.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s25" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Accessibility</span></a>
+    <a href="#s27" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Technical Specifications</span></a>
+  </nav>
+</article>
+
+
+<article class="section" id="s27">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-reference)"></span>Reference</div>
+    <span class="section-number">27</span>
+    <h2>Technical <em>Specifications</em></h2>
+    <div class="section-meta">~3 min · TS1–TS12 + ETSI/ISO/OIDF</div>
+  </header>
+  <div class="section-body">
+    <h3>EC TS series (Commission-published)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>TS</th><th>Subject</th><th>Where it bites</th></tr></thead>
+        <tbody>
+          <tr><td><strong>TS1</strong></td><td>EUDI Wallet Trust Mark</td><td>UI display of trust mark + cert info</td></tr>
+          <tr><td><strong>TS2</strong></td><td>Provider Notification &amp; Publication</td><td>LoTE/Trusted-List ops</td></tr>
+          <tr><td><strong>TS3</strong></td><td>Wallet Unit Attestations (WUA)</td><td>Critical — WUA/WIA/KA format, lifetimes, revocation</td></tr>
+          <tr><td><strong>TS5</strong></td><td>Common formats &amp; API for RP registration info</td><td>Wallet queries Registrar online service</td></tr>
+          <tr><td><strong>TS6</strong></td><td>Common RP registration info set</td><td>What Registrar holds about RPs</td></tr>
+          <tr><td><strong>TS7</strong></td><td>Common interface for data-deletion requests</td><td>GDPR Art. 17 wiring</td></tr>
+          <tr><td><strong>TS8</strong></td><td>Common interface for DPA reporting</td><td>Topic 50 reporting</td></tr>
+          <tr><td><strong>TS9</strong></td><td>Wallet-to-Wallet interactions</td><td>Topic 30 / Topic J protocol</td></tr>
+          <tr><td><strong>TS10</strong></td><td>Data portability and download (export)</td><td>Migration Object + log export</td></tr>
+          <tr><td><strong>TS11</strong></td><td>Catalogue of Attestation Rulebooks — interfaces &amp; formats</td><td>Catalogue ops</td></tr>
+          <tr><td><strong>TS12</strong></td><td>Electronic-payments SCA implementation with the wallet</td><td>Topic AA / SUA attestation rendering, processing, logging rules</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>ETSI</h3>
+    <ul>
+      <li><strong>EN 319 142-1</strong> PAdES (mandatory for QES output).</li>
+      <li><strong>EN 319 132-1</strong> XAdES, <strong>TS 119 182-1</strong> JAdES, <strong>EN 319 122-1</strong> CAdES, <strong>EN 319 162-1/2</strong> ASiC (recommended).</li>
+      <li><strong>TS 119 411-1/-8</strong> TSP requirements + access certificate policy for EUDI Wallet RPs.</li>
+      <li><strong>TS 119 412-6</strong> Certificate profiles for PID/EAA Providers.</li>
+      <li><strong>TS 119 431-1/-2</strong> Remote QSCD / TSP service components.</li>
+      <li><strong>TS 119 432</strong> Protocols for remote digital signature creation.</li>
+      <li><strong>TS 119 472-1/-2/-3</strong> Electronic Attestations general requirements / presentations / issuance profiles.</li>
+      <li><strong>TS 119 475</strong> RP attributes for authorisation.</li>
+      <li><strong>TS 119 602</strong> Lists of Trusted Entities data model (LoTE).</li>
+      <li><strong>TS 119 612</strong> Electronic Signatures Trusted Lists.</li>
+      <li><strong>EN 419 241-1</strong> SCAL definitions.</li>
+    </ul>
+
+    <h3>ISO/IEC</h3>
+    <ul>
+      <li><strong>18013-5</strong> Mobile Driving Licence (mdoc base).</li>
+      <li><strong>18013-7</strong> mDL add-on functions.</li>
+      <li><strong>23220-2</strong> Cards &amp; security devices for personal identification — building blocks for mobile eID.</li>
+      <li><strong>17065 + 17067</strong> Conformity assessment frameworks.</li>
+      <li><strong>3166-1 / -2</strong> Country / subdivision codes.</li>
+      <li><strong>19794-5</strong> Biometric face image format (used for the <code>portrait</code> JPEG in PID).</li>
+    </ul>
+
+    <h3>OpenID Foundation</h3>
+    <ul>
+      <li><strong>OpenID4VCI</strong> Verifiable Credential Issuance.</li>
+      <li><strong>OpenID4VP</strong> Verifiable Presentations.</li>
+      <li><strong>HAIP</strong> OpenID4VC High Assurance Interoperability Profile.</li>
+      <li><strong>OpenID Connect Core 1.0</strong> (legacy claim semantics).</li>
+      <li><strong>EKYC</strong> OpenID Connect for Identity Assurance Claims Registration 1.0.</li>
+    </ul>
+
+    <h3>IETF</h3>
+    <ul>
+      <li><strong>SD-JWT VC</strong> (<code>draft-ietf-oauth-sd-jwt-vc</code>).</li>
+      <li><strong>RFC 9901</strong> Selective Disclosure for JWTs.</li>
+      <li><strong>Token Status List</strong> (TSL).</li>
+      <li><strong>RFC 7515</strong> JSON Web Signatures.</li>
+      <li><strong>RFC 8949 / 8943 / 8610</strong> CBOR.</li>
+      <li><strong>RFC 9162</strong> Certificate Transparency (Topic 55).</li>
+      <li><strong>RFC 9562</strong> UUID v4/v7.</li>
+    </ul>
+
+    <h3>Other</h3>
+    <ul>
+      <li><strong>CSC API v2.0/2.2</strong> Cloud Signature Consortium for remote signatures.</li>
+      <li><strong>GlobalPlatform OMAPI / Card Specification</strong>, <strong>GSMA Secured Applications for Mobile</strong> for secure-element access.</li>
+      <li><strong>W3C WebAuthn L2</strong> for pseudonym implementation.</li>
+      <li><strong>W3C VCDM 2.0</strong>, <strong>VC-JOSE-COSE</strong>, <strong>VC Data Integrity</strong> for the W3C VC option.</li>
+      <li><strong>W3C Digital Credentials API</strong> (Draft Community Group Report) for browser-mediated credential UX.</li>
+      <li><strong>CTAP</strong> Client to Authenticator Protocol (for WebAuthn).</li>
+      <li><strong>ENISA ECCG Agreed Cryptographic Mechanisms v2</strong> + <strong>ENISA EUCC Cryptographic Guidelines v2</strong>.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s26" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Reference Implementation</span></a>
+    <a href="#s28" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Open questions</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s28">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-reference)"></span>Reference</div>
+    <span class="section-number">28</span>
+    <h2>Open <em>questions</em></h2>
+    <div class="section-meta">~1 min · Active topics &amp; standing gaps</div>
+  </header>
+  <div class="section-body">
+    <h3>2026 refinement round</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Topic</th><th>What's being settled</th></tr></thead>
+        <tbody>
+          <tr><td><strong>C</strong></td><td>Wallet Unit Attestations (WUA)</td><td>Splitting WIA / KA, revocation maintenance period, per-instance vs type-shared revocation, removing the key-exportability attribute</td></tr>
+          <tr><td><strong>X</strong></td><td>Relying Party Registration</td><td>Service identifiers per RP service; binding access + registration certs to specific services; mitigation of "compromised RP Instance" attack</td></tr>
+          <tr><td><strong>J</strong></td><td>Wallet-to-Wallet Interaction</td><td>Whether to require cryptographic device authentication of the Verifier Wallet, and which of four approaches</td></tr>
+          <tr><td><strong>E</strong></td><td>Pseudonyms</td><td>WebAuthn extensions, rate-limiting, attestation- vs ZKP-based pseudonyms, attestation-mode selection</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Open future topics (no paper yet)</h3>
+    <ul>
+      <li><strong>U</strong> EUDI Wallet Trust Mark (Iteration 2)</li>
+      <li><strong>F</strong> Digital Credentials API (Iteration 4)</li>
+      <li><strong>AA</strong> Electronic Payments Customer Authentication Support (Iteration 4)</li>
+      <li><strong>AB</strong> Digital Signature using EUDI Wallet (Iteration 4)</li>
+      <li><strong>L / M / I</strong> User data deletion / DPA reporting / representation (Iteration 5)</li>
+      <li><strong>AC / G</strong> Cryptographic binding / Zero Knowledge Proof (Iteration 6)</li>
+      <li><strong>AD / AE</strong> User binding and liveness tests (Iteration 7)</li>
+    </ul>
+
+    <h3>Standing open questions</h3>
+    <ul>
+      <li><strong>No ZKP scheme selected.</strong> Topic 53 sets HLRs but no implementation chosen.</li>
+      <li><strong>W3C Digital Credentials API status.</strong> Not yet a Recommendation; OIA_08 family makes adoption conditional.</li>
+      <li><strong>Pseudonym authenticator-side RP authentication</strong> (PA_20 gap).</li>
+      <li><strong>Use cases C and D for pseudonyms</strong> (rate-limited and linkable across actors) need new specification.</li>
+      <li><strong>Cryptographic binding mechanism for combined presentations</strong> (Topic 18 / ACP_*) needs a profile selection.</li>
+      <li><strong>Catalogue of attributes</strong> (Topic 25) currently has nearly all requirements marked Empty in the source — work in progress.</li>
+    </ul>
+
+    <h3>Removed / parked topics</h3>
+    <ul>
+      <li><strong>Topic 28 — Wallet Unit for legal persons</strong> is parked (LP_01–03 all Empty) pending the separate <strong>business wallet</strong> initiative.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s27" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Technical Specifications</span></a>
+    <a href="#s29" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Cross-cutting tradeoffs</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s29">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-closing)"></span>Synthesis</div>
+    <span class="section-number">29</span>
+    <h2>Cross-cutting <em>tradeoffs</em></h2>
+    <div class="section-meta">~3 min · Decision points to internalise</div>
+  </header>
+  <div class="section-body">
+    <p class="lead">These are the recurring decision-points where the ARF balances competing concerns. Internalising these will save you hours of re-reading.</p>
+
+    <h3>Privacy vs. operational complexity</h3>
+    <p>Issuance Method A maximises privacy but forces re-issuance per use (more network calls, more user friction, more Provider load). Method B minimises ops cost but partially leaks linkability. Picking A vs B per-attestation type is a real product decision.</p>
+
+    <h3>User control vs. user friction</h3>
+    <p>Every single attribute disclosure requires explicit user approval. Selective disclosure is mandatory. The dashboard offers per-transaction logs and one-tap data-deletion / DPA-reporting flows. Non-negotiable but materially affects UX. Build for both clarity and speed.</p>
+
+    <h3>Wallet Provider visibility vs. user privacy</h3>
+    <p>The Wallet Provider must monitor security posture (Topic T) but must <strong>not</strong> see the contents of the Wallet Unit (WIAM_12a). The data-collection list in WPSM_01 is a permissive ceiling, not a floor; minimise within it.</p>
+
+    <h3>Centralised certification vs. composite certification</h3>
+    <p>The Wallet Solution as a whole is certified at LoA High, but its components (TEE, Secure Enclave, OS) are typically certified separately under different schemes. The composite-certification dependency analysis is real engineering work.</p>
+
+    <h3>mdoc vs. SD-JWT VC</h3>
+    <p>mdoc dominates proximity (offline). SD-JWT VC dominates remote (web). Most attestations need both. Selective-disclosure semantics differ:</p>
+    <ul>
+      <li><strong>mdoc</strong>: every data element is selectively disclosable; key-value pairs <em>inside</em> a data element are not.</li>
+      <li><strong>SD-JWT VC</strong>: every claim, nested property, and array entry can be configured per Rulebook (ARB_30).</li>
+    </ul>
+
+    <h3>Local vs. remote QSCD</h3>
+    <p>Local: better UX (no network for signing), harder to deploy at scale, dependency on device hardware. Remote: easier provisioning, networked dependency, requires SCAL 2 + ETSI 431-1/2 + 432.</p>
+
+    <h3>Same-device vs. cross-device remote presentation</h3>
+    <p>Same-device is the expected default UX on mobile. Cross-device (QR) is required for desktop and shared devices. The QR flow needs careful one-time-token handling and back-channel security to prevent session hijacking.</p>
+
+    <h3>Trust delegation in presentation</h3>
+    <p>The ARF lets RPs delegate user binding to issuers (Section 6.6.3.9 — "Trust Approach"). This is operationally vital — it means an RP doesn't need to redo KYC for every presentation — but means the issuer's authentication processes carry a lot of weight.</p>
+
+    <h3>Intermediaries</h3>
+    <p>Intermediaries are first-class but tightly constrained: must register, must not store transaction content, must immediately delete attributes after forwarding (RPI_10), must be visible in the Wallet UI alongside the intermediated RP (RPI_07). Builders of intermediated services need to plan for this disclosure UX.</p>
+
+    <h3>Embedded disclosure policies vs. RP scope checks</h3>
+    <p>These are <strong>complementary</strong>:</p>
+    <ul>
+      <li><strong>RP scope check</strong>: Wallet enforces against the Registrar's record of what attributes the RP registered to receive.</li>
+      <li><strong>Embedded disclosure policy</strong>: Issuer-controlled, attestation-specific, RP-allowlisting or root-of-trust constraint.</li>
+    </ul>
+    <p>Both must be evaluated; both must be communicated to the user.</p>
+  </div>
+  <nav class="section-nav">
+    <a href="#s28" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Open questions</span></a>
+    <a href="#s30" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Glossary</span></a>
+  </nav>
+</article>
+
+<article class="section" id="s30">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-closing)"></span>Synthesis</div>
+    <span class="section-number">30</span>
+    <h2><em>Glossary</em> &amp; abbreviations</h2>
+    <div class="section-meta">~2 min · Lookup reference</div>
+  </header>
+  <div class="section-body">
+    <h3>Terms</h3>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">ARF</div><div class="kv-val">Architecture and Reference Framework</div></div>
+      <div class="kv-row"><div class="kv-key">EAA</div><div class="kv-val">Electronic Attestation of Attributes (non-qualified, unless qualified)</div></div>
+      <div class="kv-row"><div class="kv-key">eID</div><div class="kv-val">Electronic Identification</div></div>
+      <div class="kv-row"><div class="kv-key">EDICG</div><div class="kv-val">European Digital Identity Cooperation Group</div></div>
+      <div class="kv-row"><div class="kv-key">eIDAS</div><div class="kv-val">The predecessor framework, Regulation 910/2014</div></div>
+      <div class="kv-row"><div class="kv-key">HAIP</div><div class="kv-val">OpenID4VC High Assurance Interoperability Profile</div></div>
+      <div class="kv-row"><div class="kv-key">HSM</div><div class="kv-val">Hardware Security Module</div></div>
+      <div class="kv-row"><div class="kv-key">KA</div><div class="kv-val">Key Attestation (Topic C refinement, splits from WUA)</div></div>
+      <div class="kv-row"><div class="kv-key">LSP</div><div class="kv-val">Large-Scale Pilot</div></div>
+      <div class="kv-row"><div class="kv-key">LoA</div><div class="kv-val">Level of Assurance (eID-only term; LoA High required for PID)</div></div>
+      <div class="kv-row"><div class="kv-key">LoTE</div><div class="kv-val">List of Trusted Entities (for non-QTSP entities)</div></div>
+      <div class="kv-row"><div class="kv-key">mdoc</div><div class="kv-val">Mobile document per ISO/IEC 18013-5</div></div>
+      <div class="kv-row"><div class="kv-key">mDL</div><div class="kv-val">Mobile Driving Licence</div></div>
+      <div class="kv-row"><div class="kv-key">NAB</div><div class="kv-val">National Accreditation Body</div></div>
+      <div class="kv-row"><div class="kv-key">OpenID4VCI</div><div class="kv-val">OpenID for Verifiable Credential Issuance</div></div>
+      <div class="kv-row"><div class="kv-key">OpenID4VP</div><div class="kv-val">OpenID for Verifiable Presentations</div></div>
+      <div class="kv-row"><div class="kv-key">PAdES</div><div class="kv-val">PDF Advanced Electronic Signatures (ETSI EN 319 142-1)</div></div>
+      <div class="kv-row"><div class="kv-key">PID</div><div class="kv-val">Person Identification Data</div></div>
+      <div class="kv-row"><div class="kv-key">PuB-EAA</div><div class="kv-val">EAA issued by/on behalf of a public-sector body responsible for an Authentic Source</div></div>
+      <div class="kv-row"><div class="kv-key">PSD2</div><div class="kv-val">Payment Services Directive 2 (Directive 2015/2366)</div></div>
+      <div class="kv-row"><div class="kv-key">QC</div><div class="kv-val">Qualified Certificate</div></div>
+      <div class="kv-row"><div class="kv-key">QEAA</div><div class="kv-val">Qualified Electronic Attestation of Attributes</div></div>
+      <div class="kv-row"><div class="kv-key">QES</div><div class="kv-val">Qualified Electronic Signature</div></div>
+      <div class="kv-row"><div class="kv-key">QSCD</div><div class="kv-val">Qualified Electronic Signature Creation Device</div></div>
+      <div class="kv-row"><div class="kv-key">QESRC</div><div class="kv-val">Qualified Electronic Signature Remote Creation Provider</div></div>
+      <div class="kv-row"><div class="kv-key">QTSP</div><div class="kv-val">Qualified Trust Service Provider</div></div>
+      <div class="kv-row"><div class="kv-key">QWAC</div><div class="kv-val">Qualified Website Authentication Certificate</div></div>
+      <div class="kv-row"><div class="kv-key">RP</div><div class="kv-val">Relying Party</div></div>
+      <div class="kv-row"><div class="kv-key">RPI</div><div class="kv-val">Relying Party Instance</div></div>
+      <div class="kv-row"><div class="kv-key">SCA</div><div class="kv-val">Strong Customer Authentication (PSD2)</div></div>
+      <div class="kv-row"><div class="kv-key">SCAL</div><div class="kv-val">Sole Control Assurance Level (CEN EN 419 241-1)</div></div>
+      <div class="kv-row"><div class="kv-key">SCT</div><div class="kv-val">Signed Certificate Timestamp (RFC 9162 / Topic 55)</div></div>
+      <div class="kv-row"><div class="kv-key">SD-JWT VC</div><div class="kv-val">Selective Disclosure JWT Verifiable Credential</div></div>
+      <div class="kv-row"><div class="kv-key">SUA</div><div class="kv-val">Strong User Authentication; also the SUA attestation type</div></div>
+      <div class="kv-row"><div class="kv-key">TEE</div><div class="kv-val">Trusted Execution Environment</div></div>
+      <div class="kv-row"><div class="kv-key">TS</div><div class="kv-val">Technical Specification (e.g. TS3, TS9)</div></div>
+      <div class="kv-row"><div class="kv-key">TSL</div><div class="kv-val">Token Status List (IETF revocation mechanism)</div></div>
+      <div class="kv-row"><div class="kv-key">VCT</div><div class="kv-val">Verifiable Credential Type (the SD-JWT VC type identifier)</div></div>
+      <div class="kv-row"><div class="kv-key">W2W</div><div class="kv-val">Wallet-to-Wallet interaction</div></div>
+      <div class="kv-row"><div class="kv-key">WI</div><div class="kv-val">Wallet Instance (the app)</div></div>
+      <div class="kv-row"><div class="kv-key">WIA</div><div class="kv-val">Wallet Instance Attestation (Topic C refinement)</div></div>
+      <div class="kv-row"><div class="kv-key">WIAM</div><div class="kv-val">Wallet Instance Activation and Management (Topic 40)</div></div>
+      <div class="kv-row"><div class="kv-key">WSCA</div><div class="kv-val">Wallet Secure Cryptographic Application</div></div>
+      <div class="kv-row"><div class="kv-key">WSCD</div><div class="kv-val">Wallet Secure Cryptographic Device</div></div>
+      <div class="kv-row"><div class="kv-key">WUA</div><div class="kv-val">Wallet Unit Attestation (umbrella term post-refinement)</div></div>
+    </div>
+
+    <h3>HLR identifier prefix lookup</h3>
+    <div class="kv-list">
+      <div class="kv-row"><div class="kv-key">OIA</div><div class="kv-val">Topic 1 — Accessing online services</div></div>
+      <div class="kv-row"><div class="kv-key">PID</div><div class="kv-val">Topic 3 — PID Rulebook</div></div>
+      <div class="kv-row"><div class="kv-key">mDL</div><div class="kv-val">Topic 4 — mDL Rulebook</div></div>
+      <div class="kv-row"><div class="kv-key">RPA</div><div class="kv-val">Topic 6 — RP authentication &amp; user approval</div></div>
+      <div class="kv-row"><div class="kv-key">VCR</div><div class="kv-val">Topic 7 — Attestation revocation</div></div>
+      <div class="kv-row"><div class="kv-key">WUA</div><div class="kv-val">Topic 9 — Wallet Unit Attestation / WIA</div></div>
+      <div class="kv-row"><div class="kv-key">ISSU</div><div class="kv-val">Topic 10 — Issuing</div></div>
+      <div class="kv-row"><div class="kv-key">PA</div><div class="kv-val">Topic 11 — Pseudonyms</div></div>
+      <div class="kv-row"><div class="kv-key">ARB</div><div class="kv-val">Topic 12 — Attestation Rulebooks</div></div>
+      <div class="kv-row"><div class="kv-key">QES</div><div class="kv-val">Topic 16 — Signing documents</div></div>
+      <div class="kv-row"><div class="kv-key">ACP</div><div class="kv-val">Topic 18 — Combined presentations</div></div>
+      <div class="kv-row"><div class="kv-key">DASH</div><div class="kv-val">Topic 19 — Dashboard / logs</div></div>
+      <div class="kv-row"><div class="kv-key">SUA</div><div class="kv-val">Topic 20 — Payment SCA</div></div>
+      <div class="kv-row"><div class="kv-key">ProxId</div><div class="kv-val">Topic 24 — Proximity user identification</div></div>
+      <div class="kv-row"><div class="kv-key">CAT</div><div class="kv-val">Topic 25 — Catalogue of attributes</div></div>
+      <div class="kv-row"><div class="kv-key">Reg</div><div class="kv-val">Topic 27 — Provider/RP registration</div></div>
+      <div class="kv-row"><div class="kv-key">LP</div><div class="kv-val">Topic 28 — Legal-person Wallet (parked)</div></div>
+      <div class="kv-row"><div class="kv-key">RP</div><div class="kv-val">Topic 29 — Representation paradigm</div></div>
+      <div class="kv-row"><div class="kv-key">W2W</div><div class="kv-val">Topic 30 — Wallet-to-Wallet</div></div>
+      <div class="kv-row"><div class="kv-key">Mig</div><div class="kv-val">Topic 34 — Migration</div></div>
+      <div class="kv-row"><div class="kv-key">WURevocation</div><div class="kv-val">Topic 38 — Wallet Unit revocation</div></div>
+      <div class="kv-row"><div class="kv-key">WIAM</div><div class="kv-val">Topic 40 — Installation, activation, management</div></div>
+      <div class="kv-row"><div class="kv-key">QTSPAS</div><div class="kv-val">Topic 42 — QTSP access to Authentic Sources</div></div>
+      <div class="kv-row"><div class="kv-key">EDP</div><div class="kv-val">Topic 43 — Embedded disclosure policies</div></div>
+      <div class="kv-row"><div class="kv-key">RPRC</div><div class="kv-val">Topic 44 — Registration certificates</div></div>
+      <div class="kv-row"><div class="kv-key">DATA_DLT</div><div class="kv-val">Topic 48 — Data-deletion blueprints</div></div>
+      <div class="kv-row"><div class="kv-key">RPT_DPA</div><div class="kv-val">Topic 50 — DPA reporting</div></div>
+      <div class="kv-row"><div class="kv-key">PAD</div><div class="kv-val">Topic 51 — PID/attestation deletion</div></div>
+      <div class="kv-row"><div class="kv-key">RPI</div><div class="kv-val">Topic 52 — RP intermediaries</div></div>
+      <div class="kv-row"><div class="kv-key">ZKP</div><div class="kv-val">Topic 53 — Zero-Knowledge Proofs</div></div>
+      <div class="kv-row"><div class="kv-key">ACC</div><div class="kv-val">Topic 54 — Accessibility</div></div>
+      <div class="kv-row"><div class="kv-key">CT</div><div class="kv-val">Topic 55 — Certificate Transparency</div></div>
+      <div class="kv-row"><div class="kv-key">WPSM</div><div class="kv-val">Topic 56 — Wallet Provider support &amp; maintenance</div></div>
+    </div>
+  </div>
+  <nav class="section-nav">
+    <a href="#s29" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Cross-cutting tradeoffs</span></a>
+    <a href="#sA" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">Source URLs</span></a>
+  </nav>
+</article>
+
+<article class="section" id="sA">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-closing)"></span>Appendix</div>
+    <span class="section-number">A</span>
+    <h2>Source <em>URLs</em></h2>
+    <div class="section-meta">~1 min · Where to keep up</div>
+  </header>
+  <div class="section-body">
+    <ul>
+      <li><strong>Main ARF site:</strong> <code>eudi.dev/latest/</code></li>
+      <li><strong>GitHub source repo:</strong> <code>github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework</code> (raw markdown more reliable than rendered site for large documents)</li>
+      <li><strong>Reference Implementation:</strong> <code>github.com/eu-digital-identity-wallet/.github/blob/main/profile/reference-implementation.md</code></li>
+      <li><strong>Dev Hub:</strong> <code>eu-digital-identity-wallet.github.io/</code></li>
+      <li><strong>Roadmap:</strong> <code>github.com/eu-digital-identity-wallet/eudi-wallet-reference-implementation-roadmap</code></li>
+      <li><strong>Discussion topics index:</strong> <code>eudi.dev/latest/discussion-topics/</code></li>
+      <li><strong>Technical Specifications inventory:</strong> <code>eudi.dev/latest/technical-specifications/</code></li>
+      <li><strong>Standards &amp; Technical Specifications repo:</strong> <code>github.com/eu-digital-identity-wallet/eudi-doc-standards-and-technical-specifications</code></li>
+      <li><strong>Attestation Rulebooks Catalog:</strong> <code>github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog</code></li>
+      <li><strong>Functional Conformance:</strong> <code>conformance.eudi.dev/latest/</code></li>
+      <li><strong>Demo Issuer:</strong> <code>issuer.eudiw.dev</code></li>
+      <li><strong>Demo Verifier:</strong> <code>verifier.eudiw.dev</code></li>
+      <li><strong>Demo TrustProvider Signer:</strong> <code>trustprovider.signer.eudiw.dev/tester</code></li>
+      <li><strong>Support mailbox:</strong> <code>CNECT-EUDIW-SUPPORT@ec.europa.eu</code></li>
+      <li><strong>CIRs</strong> are searchable on <code>eur-lex.europa.eu/</code> and <code>data.europa.eu/eli/...</code></li>
+      <li><strong>ARF Project board:</strong> <code>github.com/orgs/eu-digital-identity-wallet/projects/36</code></li>
+    </ul>
+
+    <h3>Watch-list</h3>
+    <ul>
+      <li><strong>CIR 2024/2981 Annex I (Risk Register)</strong> — updated continuously by EDICG; verify before any certification engagement.</li>
+      <li><strong>HAIP version</strong> — currently HAIP §5.x and §6 are referenced; profile updates change OIA_03b/03c semantics.</li>
+      <li><strong>ECCG Agreed Cryptographic Mechanisms</strong> — currently v2; algorithm withdrawals impact every cryptographic component.</li>
+      <li><strong>TS3 (WUA)</strong> — currently v1.5; the Topic C refinement changes its semantics.</li>
+      <li><strong>W3C Digital Credentials API</strong> — promotion to Recommendation triggers OIA_08 obligations.</li>
+    </ul>
+  </div>
+  <nav class="section-nav">
+    <a href="#s30" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Glossary</span></a>
+    <a href="#sB" class="nav-link next"><span class="nav-link-label">Next →</span><span class="nav-link-title">What was not verified</span></a>
+  </nav>
+</article>
+
+<article class="section" id="sB">
+  <header class="section-header">
+    <div class="section-cat"><span class="dot" style="background:var(--cat-closing)"></span>Appendix</div>
+    <span class="section-number">B</span>
+    <h2>What was <em>not verified</em></h2>
+    <div class="section-meta">~1 min · Honest gaps in this briefing</div>
+  </header>
+  <div class="section-body">
+    <p>In writing this briefing, the following items had limited primary-source coverage. Where you depend on them for production decisions, fetch the source directly.</p>
+
+    <ul>
+      <li><strong>Annex 4 service blueprint PDFs (4.01–4.12)</strong> — initialisation/activation, online ID/auth, mDL issuing/proximity supervised+unsupervised, remote QES variants, local QES, QES history. Read as PDFs on the ARF site or in the GitHub repo.</li>
+      <li><strong>Annex 6 Certification Requirements PDF</strong> (16 pages, Microsoft Word origin) — could not be extracted via WebFetch tooling; requires direct PDF access for the prose certification rules.</li>
+      <li><strong>Detailed TS prose</strong> for TS1, TS2, TS3, TS5, TS6, TS7, TS8, TS9, TS10, TS11, TS12 — only the inventory and headline subjects were available through the indexed pages I read; for HLR-implementation-level detail open each TS file in <code>eudi-doc-standards-and-technical-specifications</code>.</li>
+      <li><strong>Discussion paper for Topic A (privacy)</strong> — referenced in §7.4.3.5.1 for in-depth linkability analysis, not read in full.</li>
+      <li><strong>Discussion paper for Topic G (ZKP)</strong> — referenced from Topic 53; provides context on ZKP families and integration questions, not read in full.</li>
+      <li><strong>Discussion paper for Topic Q (interface user/Wallet Instance)</strong> — referenced from Chapter 8, contains accessibility detail beyond the Annex 5 design guide.</li>
+      <li><strong>Discussion paper for Topic F (W3C Digital Credentials API)</strong> — referenced from OIA_08 family; sets the bar for "expectations" that must be met before broad mandate.</li>
+      <li><strong>Detailed mDL attribute schema</strong> — Annex 3.02 is a redirect; the canonical source is the rulebook in <code>eudi-doc-attestation-rulebooks-catalog</code>.</li>
+      <li><strong>Catalogue of attributes</strong> (Topic 25 / CAT_*) — most CAT_* HLRs are currently <code>Empty</code> in the source markdown; this is genuinely under construction, not a missing read.</li>
+      <li><strong>Pseudo-canonical CSV</strong> at <code>/hltr/high-level-requirements.csv</code> — direct fetch of this exact path returned 404; confirm before scripting against it.</li>
+    </ul>
+
+    <hr>
+
+    <p><em>End of briefing. Update as the ARF evolves; the Change Log in §1.6 of the ARF main document is the canonical place to track new iterations.</em></p>
+  </div>
+  <nav class="section-nav">
+    <a href="#sA" class="nav-link prev"><span class="nav-link-label">← Previous</span><span class="nav-link-title">Source URLs</span></a>
+    <a href="#cover" class="nav-link next"><span class="nav-link-label">↑ Top</span><span class="nav-link-title">Back to cover</span></a>
+  </nav>
+</article>
+
+</main>
+
+<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+<div class="drawer-overlay" id="overlay"></div>
+<aside class="toc-drawer" id="drawer" aria-label="Table of contents">
+  <div class="drawer-header">
+    <h3>Contents</h3>
+    <button class="icon-btn" id="closeDrawer" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+    </button>
+  </div>
+  <ol class="drawer-list" id="drawerList"></ol>
+</aside>
+
+<footer class="site-footer">
+  <div class="footer-symbol">⁂</div>
+  <p>End of briefing.</p>
+  <p class="footer-meta">Sourced from eudi.dev · Edition 2026.05<br>Iterate as the ARF evolves.</p>
+</footer>
+
+<script>
+(function() {
+  const progress = document.getElementById('progress');
+  let ticking = false;
+  function updateProgress() {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+    progress.style.width = pct + '%';
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }
+  }, { passive: true });
+
+  const themeBtn = document.getElementById('themeBtn');
+  const saved = localStorage.getItem('eudi-theme');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (saved === 'dark' || (!saved && sysDark)) document.body.classList.add('dark');
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('eudi-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  const backTop = document.getElementById('backTop');
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('visible', window.scrollY > 600);
+  }, { passive: true });
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('closeDrawer');
+  const drawerList = document.getElementById('drawerList');
+  const tocLinks = document.querySelectorAll('#toc .toc-link');
+  tocLinks.forEach(l => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = l.getAttribute('href');
+    const num = l.querySelector('.toc-num').textContent;
+    const title = l.querySelector('.toc-title').textContent.trim();
+    a.innerHTML = `<span class="num">${num}</span><span>${title}</span>`;
+    li.appendChild(a);
+    drawerList.appendChild(li);
+  });
+  function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  menuBtn.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  drawerList.addEventListener('click', e => { if (e.target.closest('a')) setTimeout(closeDrawer, 200); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+  });
+})();
+</script>
+</body>
+</html>

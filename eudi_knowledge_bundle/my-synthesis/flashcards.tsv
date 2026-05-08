@@ -1,0 +1,65 @@
+PID mdoc attestation type?	eu.europa.ec.eudi.pid.1
+PID mdoc namespace identifier?	eu.europa.ec.eudi.pid.1 (same value as the attestation type — allowed by ISO/IEC 18013-5)
+PID SD-JWT VC base vct?	urn:eudi:pid:1
+Domestic PID namespace pattern (e.g. Germany)?	eu.europa.ec.eudi.pid.de.1 (append ISO 3166-1 α-2 country code or 3166-2 region code, then optional version)
+Portrait attribute format requirement?	JPEG only; ISO/IEC 19794-5 Full Frontal Image quality (clauses 8.2–8.4); no ISO 19794-5 headers/blocks (clauses 8.1, 8.5 excluded)
+attestation_legal_category value for a PID?	"PID"
+mDL format restriction?	mdoc only (ISO/IEC 18013-5). MUST NOT be SD-JWT VC.
+Wallet user-account auth requirement?	Independent of the Wallet Unit and the User device (so the user can revoke after device loss)
+How many WSCD architecture types?	5 + Hybrid: Remote, Local External, Local Internal, Local Native, Hybrid
+How many issuance methods?	4: A Once-only, B Limited-time, C Rotating-batch, D Per-RP
+How many pseudonym use cases?	4: A Pseudonymous auth, B Attribute registration + pseudonymous auth, C Rate-limited, D Linkable across actors
+How many attestation categories?	4: PID, QEAA, PuB-EAA, EAA
+How many design principles?	5: User-centricity, Accessibility, Interoperability, Privacy by design, Security by design
+Issuance Method A?	Once-only attestations. Mandatory for WUAs. Fully mitigates RP linkability. Highest issuance overhead.
+Issuance Method B?	Limited-time. Multiple uses, periodic re-issuance. Mandatory minimum (A or B) for all PIDs/attestations. Partial linkability mitigation.
+Issuance Method C?	Rotating batch. Issued in batches; used in random order; resets when exhausted. Optional. Partial mitigation.
+Issuance Method D?	Per-RP. Same RP always gets the same attestation, but different RPs get different ones. Optional. Full intra-RP unlinkability.
+Mandatory minimum issuance method support?	A or B. Method A is always mandatory for WUAs specifically.
+CIR 2024/2977?	PID and EAA
+CIR 2024/2979?	Integrity & core functionalities (incl. pseudonym baseline Art 14, embedded disclosure policies Annex III)
+CIR 2024/2980?	Ecosystem notifications
+CIR 2024/2981?	Certification of Wallet Solutions (Annex I = Risk Register)
+CIR 2024/2982?	Protocols & interfaces
+CIR 2025/848?	Registration of wallet-relying parties
+CIR 2025/847?	Reactions to security breaches of Wallets
+CIR 2015/1502?	Assurance levels for eID (defines LoA High requirements that PID must meet)
+CIR 2018/389?	RTS for Strong Customer Authentication under PSD2
+Trusted List vs LoTE — rule?	Trusted List for QTSPs (QEAA Providers, PuB-EAA Providers). LoTE for non-QTSPs (Wallet Providers, PID Providers, Access CAs, Providers of Registration Certificates).
+Where do RPs live in the trust topology?	No list for RPs. Each RP gets access certificates from an Access CA; Wallet Units verify those.
+Critical assets rule?	Must live in WSCA/WSCD (e.g. PID keys, WUA keys, high-security attestation keys). Non-critical assets may live in a keystore.
+HLR prefix OIA_?	Topic 1 — Accessing online services
+HLR prefix PID_?	Topic 3 — PID Rulebook
+HLR prefix mDL_?	Topic 4 — mDL Rulebook
+HLR prefix RPA_?	Topic 6 — Relying Party authentication & User approval
+HLR prefix VCR_?	Topic 7 — Attestation revocation
+HLR prefix WUA_?	Topic 9 — Wallet Unit / Wallet Instance Attestation
+HLR prefix ISSU_?	Topic 10 — Issuing
+HLR prefix PA_?	Topic 11 — Pseudonyms
+HLR prefix ARB_?	Topic 12 — Attestation Rulebooks
+HLR prefix QES_?	Topic 16 — Signing documents
+HLR prefix ACP_?	Topic 18 — Combined presentations / cryptographic binding
+HLR prefix DASH_?	Topic 19 — Dashboard / logs
+HLR prefix SUA_?	Topic 20 — Strong User Authentication for payments
+HLR prefix Reg_?	Topic 27 — Provider/RP registration
+HLR prefix W2W_?	Topic 30 — Wallet-to-Wallet
+HLR prefix Mig_?	Topic 34 — Migration
+HLR prefix WURevocation_?	Topic 38 — Wallet Unit revocation
+HLR prefix WIAM_?	Topic 40 — Installation, activation, management
+HLR prefix EDP_?	Topic 43 — Embedded disclosure policies
+HLR prefix RPRC_?	Topic 44 — Registration certificates
+HLR prefix RPI_?	Topic 52 — RP intermediaries
+HLR prefix ZKP_?	Topic 53 — Zero-Knowledge Proofs
+HLR prefix WPSM_?	Topic 56 — Wallet Provider support & maintenance
+Proximity presentation protocol?	ISO/IEC 18013-5 (mdoc/CBOR, over NFC, BLE, or Wi-Fi/QR). Device retrieval only — server retrieval forbidden (ProxId_02).
+Remote presentation protocol?	OpenID4VP, profiled per HAIP. Response must be encrypted (OIA_09).
+Issuance protocol?	OpenID4VCI, profiled per HAIP.
+Remote QES integration protocol?	Cloud Signature Consortium API v2.0 (when SCA is integrated and uses a remote QSCD) — QES_07.
+Mandatory QES output format?	PAdES (ETSI EN 319 142-1). XAdES, JAdES, CAdES, ASiC are SHOULD.
+W2W transport?	Proximity only — ISO/IEC 18013-5 (W2W_08).
+W3C DC API support — when?	Conditional: when it's a W3C Recommendation, satisfies Topic F expectations, and is broadly supported (OIA_08).
+Is the ARF legally binding?	No. Only Reg (EU) 2024/1183 and adopted CIRs are. The ARF is informative.
+Can the Wallet Provider see what's in the Wallet Unit?	No. WIAM_12a explicitly forbids it (attestations present, status, attribute values, transaction log all hidden).
+Does the Wallet Unit carry a registration certificate?	No. Registration certificates are for PID/Attestation Providers and RPs. Wallet Units carry WUAs (and post-Topic-C: WIAs + KAs).
+Wallet Provider revocation-notice obligation?	Within 24 hours, via a communication channel independent of the Wallet Unit (WURevocation_14, _16).
+Default RP-linkability posture without mitigation?	Default mdoc/SD-JWT VC formats permit RP linkability. Mitigation requires Method A (full), B (partial), or future ZKP.

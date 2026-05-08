@@ -1,0 +1,116 @@
+@startuml
+
+package "http://data.europa.eu/eudi/wrp/" {
+  class WalletRelyingParty {
+    + tradeName: string [0..1]
+    + supportURI: string [1..*]
+    + srvDescription: MultiLangString [1..*]
+    + intendedUse: IntendedUse [1..*]
+    + isPSB: boolean
+    + entitlements: string [1..*]
+    + providesAttestations: ProvidedAttestation [0..*]
+    + supervisoryAuthority: SupervisoryAuthority
+    + registryURI: string
+    + usesIntermediary: WalletRelyingParty [0..*]
+    + isIntermediary: boolean
+  }
+  WalletRelyingParty --|> Provider
+
+  class Provider {
+    + policy: Policy [1..*]
+    + providerType: string
+    + x5c: string [0..*]
+  }
+  Provider --|> LegalEntity
+
+  class Policy {
+    + policyURI: string
+    + type: string
+  }
+
+  class IntendedUse {
+    + purpose: MultiLangString [1..*]
+    + privacyPolicy: Policy [1..*]
+    + intendedUseIdentifier : string
+    + createdAt: string
+    + revokedAt: string
+    + credentials: Credential [1..*]
+  }
+
+  class ProvidedAttestation {
+    + format: string
+    + meta: string
+  }
+
+  class Credential {
+    + format: string
+    + meta: string
+    + claims: Claim [1..*]
+  }
+
+  class Claim {
+    + path: non-empty array of strings, nulls and non-negative integers
+  }
+
+  class LegalEntity {
+    + identifier: Identifier [1..*]
+    + legalPerson: LegalPerson [0..1]
+    + naturalPerson: NaturalPerson [0..1]
+    + postalAddress: string [0..*]
+    + country: string
+    + email: string [0..*]
+    + phone: string [0..*]
+    + infoURI: string [0..*]
+  }
+
+  class Identifier {
+    + identifier: string
+    + type: string
+  }
+
+  class LegalPerson {
+    + establishedByLaw: Law [0..*]
+    + legalName: string [1..*]
+  }
+
+  class Law {
+    + legislativeIdentifier: string
+    + legalBasis: string [0..*]
+  }
+  
+  class MultiLangString {
+    + lang: string
+    + content: string
+  }
+
+   class SupervisoryAuthority {
+    + country: string
+    + name: string
+    + email: string [0..*]
+    + phone: string [0..*]
+    + formURI: string [0..*]
+  }
+
+  class NaturalPerson {
+    + familyName: string
+    + givenName: string
+    + dateOfBirth: string [0..1]
+    + placeOfBirth: string [0..1]
+  }
+
+  WalletRelyingParty -- SupervisoryAuthority : supervised by
+  WalletRelyingParty -- ProvidedAttestation : may provide
+  WalletRelyingParty -- WalletRelyingParty : may use intermediary
+  WalletRelyingParty -- IntendedUse : contains
+   WalletRelyingParty -- MultiLangString : srvDescription
+  IntendedUse -- MultiLangString : purpose
+  IntendedUse -- Policy : has 
+  IntendedUse -- Credential : contains
+  Credential  --  Claim : contains
+  LegalEntity --  Identifier : identified by
+  LegalEntity --  LegalPerson : may be
+  LegalEntity --  NaturalPerson : may be
+  LegalPerson -- Law : may be authentic source established by
+  Provider -- Policy : has
+}
+@enduml

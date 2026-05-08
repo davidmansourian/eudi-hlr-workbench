@@ -1,0 +1,59 @@
+QES - View history of signatures
+High Level Description:
+In the ‘View History of Signatures’ flow, the User can retrieve a list of previously signed documents (i.e. chronological record of activities or interactions related to the viewing and
+signing of documents), encompassing several key elements such as the consent to sign, the hash of the viewed document, the signature of the viewed document, and the signed
+document itself.
+By maintaining a comprehensive view history that includes these crucial components, the EUDIW ensures transparency, accountability, and a secure record of the document
+viewing and signing processes. It shall be clarified that the EUDI Wallet is only expected to provide a copy of the document, without guarantees about keeping a secure record.
+
+Journey Steps
+Which step of the                                                                                                                                            Usage
+experience are you                                                                                                                                  How would they use the app?
+describing?
+
+
+
+
+Enablers
+What do they need
+                                User has signed
+                            documents/data using the
+                                  EUDI Wallet
+
+
+
+
+User
+                       Opens EUDI                     Identifies to                             Navigates to the    Selects to view history                                                    Views list of signed   (OPTIONAL) Selects to                            View details of the
+EUDI Wallet Holder       Wallet                       EUDI Wallet                              Signatures section    of signed documents                                                          documents            open the details of a                        document and eSignature
+                                                                                                                                                                                                                        signed document
+
+
+
+
+                                                                                          Reads
+                                                                                      error message
+
+
+
+
+Touchpoint
+What service do they
+interact with?
+
+                          EUDI Wallet (Valid State)                                                                                                                                      EUDI Wallet (Valid State)                                                  EUDI Wallet (Valid State)
+
+                          Valid State                                                                                                                                                    Valid State                                                                Valid State
+
+
+
+Backstage
+
+
+
+
+                                                                      Authenticates                                                           Retrieves available     Presents list of                                                            Presents the
+EUDI Wallet
+                                                                          User                                                                signed documents      signed documents                                                            document and
+                                                                                                                                                                                                                                               eSignature details
+

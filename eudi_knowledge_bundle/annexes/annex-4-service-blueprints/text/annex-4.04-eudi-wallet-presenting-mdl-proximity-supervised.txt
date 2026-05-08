@@ -1,0 +1,98 @@
+Presenting mDL (Proximity - Supervised)
+Journey Steps
+                                                                                                                                                        Usage
+Which step of the experience
+                                                                                                                                               How would they use the app?
+are you describing?
+
+
+
+
+Enablers
+What do they need                      For citizen and relying party:                                                             For EUDI Wallet:              For Relying Party:                                              For citizen:
+                                        Having issued a mDL in the                                                                 NFC/BLE/WiFi            Being a certified EUDI Wallet                                       Being able to
+                                                EUDI Wallet                                                                                               ecosystem entity included in a                                     authenticate via
+                                                                                                                                                                   Trusted List                                             PIN/biometrics etc.
+
+
+
+
+                                                                                              Authenticate in                                                                                           View / Select            Confirm
+                                                                           Open EUDI Wallet                                 Show QR code
+                                                                                               EUDI Wallet                                                                                           requested data or         authorizing
+                                                                                                                            (to be scanned
+                                                                                                                                                                                                       data types and       disclosure of data
+Citizen                                                                                                                    by Relying Party)
+                                                                                                                                                                                                         requestor                 (PIN,
+
+Actor                                                                                                                                                                                                    To increase
+                                                                                                                                                                                                         awareness it
+                                                                                                                                                                                                                               Biometrics)
+
+                                                                                                                                                                                                            shall be           It is expected that there
+                                                                                                                                                                                                        considered to           may be use cases ,e.g.
+                                                                                                                                                                                                                             roadside checks, where the
+                                                                                                                                                                                                        show the EUDI
+                                                                                                                                                                                                                                  above steps may be
+                                                                                                                                                                                                       Wallet Trust Mark.       deemed optional. This
+                                                                                                                                                                                                                              would depend on the use
+                                                                                                                                                                                                                                  case and legal basis.
+
+
+
+
+                                                                                                                                                                                                Read                                                                          Read
+                                                                                                                                                                                           error message                                                                 error message
+
+
+
+
+Police officer (PO)
+Actor                                                                                                                                                    Scan
+                                              PO requests to                                                                                            QR code                                                                                                                            See proof of        Proceed with
+                                               view driving                                                                                                                                                                                                                                 validation         verification of
+                                                  license                                                                                                                                                                                                                                                     the mDL holder
+
+
+
+
+Touchpoint
+What service do they interact
+                                                                                                                                                Relying party service
+with?                                                     Police officer
+                                                                                                                                                    / Verifier app
+                                                                                                                                                                                                                                                                                                     Police officer
+
+
+                                EUDI Wallet (Operational/Valid State)
+
+                                Operational/Valid State
+
+
+
+
+Backstage
+
+
+
+
+Police
+Relying party
+                                                                                                                 Generates request
+                                                                                                                for the required data                                                                                                                                    Verification of
+                                                                                                                                                                                                                                                                              mDL
+
+
+
+
+mDL Provider
+Actor
+
+
+
+
+EUDI Wallet
+Actor / Touchpoint                                                                                                                                             Verify authenticity of                                                                      Authenticate the
+                                                                                                                                                                                                                                                                User
+                                                                                                                                                                   relying party
+

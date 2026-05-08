@@ -1,0 +1,106 @@
+Local QES - Enrolment
+High Level Description:
+In the local enrolment flow, the User is allowed to enroll to local signing mean which can be utilized for the creation of eSignatures. It shall be clarified
+that a default signing mean is expected to be provided within the EUDI Wallet by the Member States, but it will also be possible for Users to enroll to
+additional signing means/services.
+
+
+Journey Steps
+                                                                                                                                                                                                                                                                                                                            Usage
+Which step of the experience
+                                                                                                                                                                                                                                                                                                                   How would they use the app?
+are you describing?
+
+
+
+
+Enablers
+What do they need                                                                                                                                                                                                                                                                             ForFor
+                                                                                                                                                                                                                                                                                                   user:   Beingableble
+                                                                                                                                                                                                                                                                                                     user: Being
+                                       Internet
+                                         Internet
+                                                                                                                                                                                                                                                                                                  to authenticate via
+                                       Connectivity                                                                                                                                                                                                                                            to PIN/biometrics
+                                                                                                                                                                                                                                                                                                  authenticate   etc.via
+                                     Connectivity
+                                                                                                                                                                                                                                                                                              PIN/biometrics etc.
+
+
+
+                                                                                                                                                                                 Authenticates
+                                                                                                                                                                                 in EUDI Wallet
+
+
+
+
+User                                Navigates to a                                                          Opens                   Identifies to                                   Reads                 Scans
+                                                              Requests a                                                                                                                                                                                                     Views/Selects    Confirms authorizing                                      Sets up
+EUDI Wallet Holder               certificate authority's                                                  EUDI Wallet               EUDI Wallet                                                          QR-​code                                                                                                                                                                                                                                                                                                                                                                         Receives
+                                                           Qualified Certificate                                                                                                error message                                                                             requested data or     disclosure of data                                signature/private
+                                         website                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        confirmation
+                                                                                                                                                                                                                                                                            data types and    ('Accept' button, PIN,                             key (PIN, Biometrics)
+                                                                                                                                                                                                                                                                               requestor           Biometrics)
+                                                                                                                                                                                                   May be optional/not applicable if
+                                                                                                                                                                                                  other interactions means are being
+                                                                                                                                                                                                         utilised (e.g. deep-​link)
+
+
+
+
+Touchpoint
+What service do they interact
+with?
+
+                                                                                                                                                    EUDI Wallet (Valid State)                                                                                                                                                                    EUDI Wallet
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          EUDI Wallet (Valid State)
+                                                                             QTSP Service
+                                                                                                                                                    Valid State                                                                                                                                                                                   Valid State                                                                                                                                                                                                             Valid State
+
+
+
+Backstage
+
+
+
+
+EUDI Wallet
+
+                                                                                                                                                                                                                                       Verifies   Collects and Presents                                                       Verifies
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Stores           Stores
+                                                                                                                                                                                                                                        QTSP       the Required Data                                                       Authorisation
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         certificate    QSCD/ QTSP data
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Storing details about the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       QTSP/QSCD such as which is the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       QTSP and how information will be
+Signature Creation Device                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  sent for future retrieval.
+
+
+(Local)
+(located in the EUDI Wallet or
+an external signature creation                                                                                                                        Authenticates
+                                                                                                                                                          user                                                                                                                                                                             Creates                             Creates
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Stores
+device)                                                                                                                                                                                                                                                                                                                                    key pair                      Certificate Request
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            certificate
+                                                                                                                                                                                                                                                                                                                                                                            May be created by the EUDI wallet
+                                                                                                                                                                                                                                                                                                                                                                                        instead.
+
+
+
+
+QTSP                                                                                  Generates and presents
+                                                                                                                                                                                                                                                                                                                                                                                                                      Verifies        Verifies           Authenticates                                     Creates            Stores             Delivers
+                                                                                    request for the required data
+                                                                                                                                                                                                                                                                                                                                                                                                                Certificate request    Wallet                User                                    Qualified Certificate   certificate   Qualified Certificate
+                                                                                           (e.g. QR-​code)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                 It is assumed that PID authentication using the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                   EUDI Wallet is applicable. If other attributes,
+                                                                                             The interaction between the EUDI                                                                                                                                                                                                                                                                                                                      i.e. attribute attestations, are needed for the
+                                                                                             Wallet and the QTSP is indicatively                                                                                                                                                                                                                                                                                                                 certificate, then the option of sending attribute
+                                                                                            depicted to occur via a QR-​code, but                                                                                                                                                                                                                                                                                                                   attestations and validating them should be
+                                                                                                                                                                                                                                                                                                                                                                                                                                                               taken into consideration.
+                                                                                             it could also be achieved through
+                                                                                                 other means, e.g. deep-​link
+

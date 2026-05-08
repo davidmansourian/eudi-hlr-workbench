@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Local-only helpers — contain absolute paths
+legal-texts-download.html
+legal-texts-download-remaining.html
+legal-texts-process.sh
+
+# Redundant bundle archives — the unzipped bundle is canonical
+eudi_knowledge_bundle.tar.gz
+eudi_knowledge_bundle_flat/
+eudi_knowledge_bundle_flat.zip
+
+# Workbench build artifacts (the data is already inlined in index.html)
+hlr_explorer_src/hlr_graph.json
+hlr_explorer_src/_archive_template.html.OLD
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude memory (per-machine)
+.claude/

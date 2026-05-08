@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F14" media="(prefers-color-scheme: dark)">
+<title>EUDI HLR Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+<script type="module">
+  // Mermaid is lazily-imported and exposed on window for use by the bundled
+  // script below. It only renders when a topic-with-blueprint is opened.
+  window.__loadMermaid = async function(theme) {
+    if (window.mermaid) return window.mermaid;
+    const m = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+    window.mermaid = m.default;
+    window.mermaid.initialize({
+      startOnLoad: false,
+      theme: theme || 'default',
+      securityLevel: 'loose',
+      sequence: { mirrorActors: false, showSequenceNumbers: false, wrap: true },
+    });
+    return window.mermaid;
+  };
+</script>
+<style>
+__CSS__
+</style>
+</head>
+<body>
+<header>
+  <button class="icon-btn mobile-toggle" id="mtFilters" aria-label="Filters">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+  </button>
+  <h1>EUDI <em>HLR Workbench</em>
+    <span class="stat-pill" id="statPill">718 nodes · 1024 edges</span>
+  </h1>
+  <button class="cmd-hint" id="cmdkHint" title="Open command palette">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    Search · <kbd>⌘K</kbd>
+  </button>
+  <a class="briefing-link" href="EUDI_BRIEFING_MOBILE.html" title="Open the EUDI Engineering Briefing">
+    📘 Briefing<span style="font-size:9px;margin-left:3px;color:var(--text-subtle);">↗</span>
+  </a>
+  <button class="learn-launcher" id="learnLauncher" title="Open Learn / Quiz">
+    📖 Learn <span class="due-badge" id="learnDueBadge" style="display:none;">0</span>
+  </button>
+  <button class="cosmos-launcher" id="cosmosLauncher" title="Cosmos — fullscreen cinematic graph (F)" aria-label="Cosmos mode">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+    Cosmos
+  </button>
+  <button class="help-launcher" id="helpLauncher" title="What's this? (glossary &amp; rules)" aria-label="Help">?</button>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  <button class="icon-btn mobile-toggle" id="mtDetail" aria-label="Detail">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+  </button>
+</header>
+
+<main>
+  <!-- LEFT PANEL: Filters / Lens tabs -->
+  <aside class="left" id="leftPanel">
+    <div class="tabs">
+      <button class="tab active" data-tab="filters">Filters</button>
+      <button class="tab" data-tab="lens">Lens <span class="badge" id="lensBadge" style="display:none;">on</span></button>
+      <button class="tab" data-tab="paths">Paths <span class="badge" id="pathsBadge" style="display:none;"></span></button>
+    </div>
+    <div class="tab-panel active" id="tab-filters">
+      <div class="panel-section">
+        <h3>Show node types</h3>
+        <div id="typeFilters"></div>
+      </div>
+      <div class="panel-section">
+        <h3>HLR actor categories</h3>
+        <div class="filter-actions">
+          <button class="btn-text" data-action="all-cats">All</button>
+          <button class="btn-text" data-action="none-cats">None</button>
+        </div>
+        <div id="categoryFilters"></div>
+      </div>
+      <div class="panel-section personal-section">
+        <h3>My layer</h3>
+        <div id="personalFilters"></div>
+      </div>
+      <div class="panel-section">
+        <h3>Topics <span class="count" id="topicsCount"></span></h3>
+        <div class="filter-actions">
+          <button class="btn-text" data-action="all-topics">All</button>
+          <button class="btn-text" data-action="none-topics">None</button>
+        </div>
+        <div id="topicFilters"></div>
+      </div>
+      <div class="panel-section">
+        <h3>Legend</h3>
+        <div class="legend">
+          <div style="margin-bottom:6px;color:var(--text);font-weight:600;">Node types</div>
+          <div class="legend-row"><span class="swatch" style="background:var(--cat-wp)"></span>HLR (circle, coloured by actor)</div>
+          <div class="legend-row"><span class="swatch hex" style="background:var(--type-topic)"></span>Topic (diamond)</div>
+          <div class="legend-row"><span class="swatch sq" style="background:var(--type-ts)"></span>Technical Spec (rounded square)</div>
+          <div class="legend-row"><span class="swatch sq" style="background:var(--type-legal-cir)"></span>CIR / Regulation / Directive (square)</div>
+          <div class="legend-row"><span class="swatch tri"></span>Discussion paper (triangle)</div>
+          <div class="legend-row"><span class="swatch tri rr"></span>Refinement-round paper (chevron)</div>
+          <div style="margin:10px 0 6px;color:var(--text);font-weight:600;">Edges</div>
+          <div class="legend-row line"><span class="swatch"></span>Parent → child</div>
+          <div class="legend-row line dashed"><span class="swatch"></span>HLR references</div>
+          <div class="legend-row line dotted"><span class="swatch"></span>Topic contains HLRs</div>
+          <div class="legend-row line thin"><span class="swatch"></span>TS implements / Legal governs</div>
+          <div class="legend-row line dashed" style="--accent: var(--type-disc);"><span class="swatch" style="border-top-color:var(--type-disc) !important;"></span>Disc paper discusses topic</div>
+          <div style="margin-top:10px;color:var(--text-subtle);font-size:10px;line-height:1.5;">Node size scales with how often it's referenced. HLRs with personal status get a coloured ring.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-lens">
+      <div id="lensActiveBox"></div>
+      <div id="lensFeatureList" class="feature-list"></div>
+    </div>
+    <div class="tab-panel" id="tab-paths">
+      <div id="pathActiveBox"></div>
+      <div id="pathList" class="feature-list"></div>
+    </div>
+  </aside>
+
+  <!-- CENTRE: graph -->
+  <div id="cy">
+    <div class="graph-controls">
+      <button id="layoutCose" class="active">Force layout</button>
+      <button id="layoutGrid">Topic grid</button>
+      <button id="resetView">Reset view</button>
+      <button id="hideEmpty">Hide empty</button>
+    </div>
+    <div class="graph-status" id="graphStatus">Initialising…</div>
+  </div>
+
+  <!-- RIGHT PANEL: detail -->
+  <aside class="right" id="rightPanel">
+    <div id="detailPane">
+      <div class="detail-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <div><strong>Click any node</strong> in the graph<br>or press <kbd>⌘K</kbd> to search.</div>
+        <div style="margin-top:14px;font-size:11px;opacity:0.85;">Try: <kbd>WIAM_14</kbd> · <kbd>topic 9</kbd> · <kbd>TS3</kbd> · <kbd>2024/2977</kbd></div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Cosmos mode: full-screen cinematic visualization. Hidden by default; activated by toggling body.cosmos. -->
+<div class="cosmos-starfield" id="cosmosStarfield" aria-hidden="true"></div>
+<div class="cosmos-vignette" id="cosmosVignette" aria-hidden="true"></div>
+<div class="cosmos-ui" id="cosmosUI" aria-hidden="true">
+  <div class="cosmos-title">
+    <span class="cosmos-title-pre">EUDI</span>
+    <span class="cosmos-title-main">Cosmos</span>
+    <span class="cosmos-title-sub">747 nodes · the spec, visualised</span>
+  </div>
+  <div class="cosmos-stats" id="cosmosStats">
+    <div class="cosmos-stat"><span class="num" data-stat="hlr">656</span><span class="lbl">HLRs</span></div>
+    <div class="cosmos-stat"><span class="num" data-stat="topic">34</span><span class="lbl">Topics</span></div>
+    <div class="cosmos-stat"><span class="num" data-stat="ts">14</span><span class="lbl">TS</span></div>
+    <div class="cosmos-stat"><span class="num" data-stat="legal">14</span><span class="lbl">Legal</span></div>
+    <div class="cosmos-stat"><span class="num" data-stat="disc">29</span><span class="lbl">Disc</span></div>
+    <div class="cosmos-stat"><span class="num" data-stat="edges">1068</span><span class="lbl">Edges</span></div>
+  </div>
+  <div class="cosmos-tour" id="cosmosTour">
+    <div class="cosmos-tour-label">Tour</div>
+    <div class="cosmos-tour-stops" id="cosmosTourStops"><!-- filled by JS --></div>
+  </div>
+  <div class="cosmos-hint">
+    <kbd>F</kbd> exit · <kbd>C</kbd> auto-pilot · <kbd>1-9</kbd> tour · <kbd>Space</kbd> pause · <kbd>R</kbd> reset
+  </div>
+  <div class="cosmos-readout" id="cosmosReadout"><!-- filled on hover --></div>
+  <button class="cosmos-exit" id="cosmosExit" title="Exit cosmos (F or Esc)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+</div>
+
+<!-- Help / Meta-glossary overlay -->
+<div class="help-overlay" id="helpOverlay">
+  <div class="help" role="dialog" aria-label="Help">
+    <div class="help-head">
+      <h2>What is <em>this map</em>?</h2>
+      <button class="atlas-close" id="helpClose" aria-label="Close (Esc)">×</button>
+    </div>
+    <div class="help-body" id="helpBody"></div>
+  </div>
+</div>
+
+<!-- Quiz / Learn overlay -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz" role="dialog" aria-label="Learn">
+    <div class="quiz-head">
+      <h2>Learn <em>Quiz</em></h2>
+      <span class="quiz-stat" id="quizStat"></span>
+      <button class="atlas-close" id="quizClose" aria-label="Close (Esc)">×</button>
+    </div>
+    <div class="quiz-body">
+      <div class="quiz-filter-row">
+        <select id="quizFilterSource">
+          <option value="all">All sources</option>
+          <option value="deck">Curated cards</option>
+          <option value="pitfall">Pitfalls (tricky)</option>
+          <option value="tension">Tensions (exceptions)</option>
+        </select>
+        <select id="quizFilterTopic"><option value="all">All topics</option></select>
+        <select id="quizFilterDeck"><option value="all">All decks</option></select>
+        <label class="quiz-toggle"><input type="checkbox" id="quizFilterMyHlrs"> Only on my <em>in-progress</em> HLRs</label>
+        <label class="quiz-toggle"><input type="checkbox" id="quizFilterDueOnly"> Due only</label>
+        <button class="btn-text" id="quizReshuffle">Reset & shuffle</button>
+      </div>
+      <div class="quiz-card-area" id="quizCardArea"></div>
+      <div class="quiz-footer">
+        <span id="quizPos">—</span>
+        <span><span class="streak-flame">🔥</span> Streak <span id="quizStreak">0</span></span>
+        <span>Today: <span id="quizToday">0</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Path Atlas overlay -->
+<div class="atlas-overlay" id="atlasOverlay">
+  <div class="atlas" role="dialog" aria-label="Path Atlas">
+    <div class="atlas-head">
+      <h2>Path <em>Atlas</em></h2>
+      <span class="stat" id="atlasStat"></span>
+      <button class="atlas-close" id="atlasClose" aria-label="Close (Esc)">×</button>
+    </div>
+    <div class="atlas-body">
+      <div class="atlas-search-row">
+        <div class="atlas-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="atlasSearch" placeholder="Type an HLR ID, topic, TS, or keyword to find a path that covers it…" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="atlas-typefilter" role="tablist">
+          <button class="active" data-atype="all">All</button>
+          <button data-atype="hlr">HLRs</button>
+          <button data-atype="topic">Topics</button>
+          <button data-atype="ts">TS</button>
+          <button data-atype="legal">Legal</button>
+          <button data-atype="disc">Disc</button>
+        </div>
+      </div>
+
+      <div class="atlas-results" id="atlasResults"></div>
+
+      <div>
+        <h3 class="atlas-section-title">Coverage matrix <span class="help">— how many HLRs each path covers in each topic. Click a cell to focus.</span></h3>
+        <div class="atlas-matrix-wrap" id="atlasMatrixWrap"></div>
+        <div class="atlas-legend">
+          <span class="item"><span class="swatch l1"></span>1 HLR</span>
+          <span class="item"><span class="swatch l2"></span>2-3</span>
+          <span class="item"><span class="swatch l3"></span>4-6</span>
+          <span class="item"><span class="swatch l4"></span>7+</span>
+          <span class="item" style="margin-left:auto;">Outline = your progress (green=done, amber=in-progress)</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="atlas-section-title">All paths <span class="help">— click "Open" to start, or "Focus graph" to see only that path's nodes.</span></h3>
+        <div class="atlas-path-cards" id="atlasPathCards"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Command palette -->
+<div class="palette-overlay" id="paletteOverlay">
+  <div class="palette" role="dialog" aria-label="Command palette">
+    <div class="palette-input-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" class="palette-input" id="paletteInput" placeholder="Search HLR ID, topic, TS, CIR, or text…" autocomplete="off" spellcheck="false">
+      <span class="palette-esc">Esc</span>
+    </div>
+    <div class="palette-results" id="paletteResults"></div>
+    <div class="palette-footer">
+      <span><kbd>↑↓</kbd>navigate</span>
+      <span><kbd>↵</kbd>open</span>
+      <span><kbd>Esc</kbd>close</span>
+      <span style="margin-left:auto;color:var(--text-subtle);" id="paletteCount"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+const HLR_DATA = __HLR_DATA__;
+
+(function () {
+__SCRIPT__
+})();
+</script>
+</body>
+</html>
